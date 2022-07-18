@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+
+  db:
+    image: mysql:8.0.28
+    environment:
+      MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
+    volumes:
+      - "./db:/var/lib/mysql"
+
+  api:
+    build:
+      context: ./api
+      args:
+        WORKDIR: $WORKDIR
+    # ホストのRailsファイルとapi用のコンテナを同期
+    volumes:
+      - "./api:/$WORKDIR"
+    environment:
+      MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
+    ports:
+      - "3000:3000"
+    # dbコンテナ起動後にapiコンテナを起動
+    depends_on:
+      - db
