@@ -4,10 +4,11 @@ services:
 
   db:
     image: mysql:8.0.28
-    environment:
-      MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
+    command: --default-authentication-plugin=mysql_native_password
     volumes:
       - "./db:/var/lib/mysql"
+    environment:
+      MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
 
   api:
     build:
@@ -20,7 +21,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
     ports:
-      - "3000:3000"
+      - "8000:3000"
     # dbコンテナ起動後にapiコンテナを起動
     depends_on:
       - db
