@@ -25,3 +25,16 @@ services:
     # dbコンテナ起動後にapiコンテナを起動
     depends_on:
       - db
+
+  front:
+    build:
+      context: ./front
+      args:
+        WORKDIR: $WORKDIR
+    #frontディレクトリにあるホストのファイルとコンテナを同期
+    volumes:
+      - "./front:/$WORKDIR"
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
