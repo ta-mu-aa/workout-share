@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+
+  db:
+    image: mysql:8.0.28
+    command: --default-authentication-plugin=mysql_native_password
+    volumes:
+      - "./db:/var/lib/mysql"
+    environment:
+      MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
+
+  api:
+    build:
+      context: ./api
+      args:
+        WORKDIR: $WORKDIR
+    # ホストのRailsファイルとapi用のコンテナを同期
+    volumes:
+      - "./api:/$WORKDIR"
+    environment:
+      MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
+    ports:
+      - "8000:3000"
+    # dbコンテナ起動後にapiコンテナを起動
+    depends_on:
+      - db
+
+  front:
+    build:
+      context: ./front
+      args:
+        WORKDIR: $WORKDIR
+    #frontディレクトリにあるホストのファイルとコンテナを同期
+    volumes:
+      - "./front:/$WORKDIR"
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
