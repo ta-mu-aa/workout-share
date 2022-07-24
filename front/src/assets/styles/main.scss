@@ -1,6 +1,8 @@
-.sass_test{
-  &__test{
-    color: red;
-    font-size: 20px;
-  }
+html, body {
+  width: 100%;
+  height: 100%;
+}
+
+#app {
+  height: 100%;
 }
