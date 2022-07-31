@@ -1,0 +1,18 @@
+<template>
+  <a href="#" class="flex items-center group-hover:opacity-60 duration-200">
+    <div>
+      <img class="inline-block h-10 w-10 rounded-full" src="https://pbs.twimg.com/profile_images/1121328878142853120/e-rpjoJi_bigger.png" alt="" />
+    </div>
+    <div class="ml-3">
+      <span class="text-sm leading-6 font-medium ">
+        筋トレ 太郎 
+      </span>
+    </div>
+  </a>
+</template>
+
+<script>
+export default {
+  
+}
+</script>
