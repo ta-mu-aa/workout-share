@@ -1,0 +1,51 @@
+<template>
+<div>
+  <div class="flex flex-shrink-0 p-4 pb-0">
+    <a href="#" class="flex-shrink-0 group block">
+      <div class="flex items-center">
+        <PostUserinfo />
+        <div class="ml-3">
+          <span class="text-sm leading-5 ml-2 font-medium text-gray-400">
+            8月1日
+          </span>
+        </div>
+      </div>
+    </a>
+  </div>
+
+  <div class="pl-16">
+    <p class="text-base width-auto font-medium  flex-shrink">
+      テキストが入ります
+      テキストが入りますテキストが入りますテキストが入りますテキストが入りますテキストが入りますテキストが入りますテキストが入りますテキストが入りますテキストが入りますテキストが入ります
+      <span class="text-blue-400"># リンクが入ります</span>
+    </p>
+
+    <div class="flex">
+      <div class="w-full">
+        <div class="flex justify-end items-center">
+          <PostReply />
+          <PostFavorite />
+        </div>
+      </div>
+    </div>  
+  </div>
+  <hr class="border-gray-600">
+</div>
+</template>
+
+<script>
+import PostUserinfo from './PostUserinfo.vue'
+import PostReply from './PostReply.vue'
+import PostFavorite from './PostFavorite.vue'
+export default {
+  components: {
+    PostUserinfo,
+    PostReply,
+    PostFavorite
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+  
+</style>
