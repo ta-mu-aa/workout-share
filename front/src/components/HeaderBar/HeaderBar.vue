@@ -1,11 +1,10 @@
 <template>
   <nav class="flex items-center justify-between flex-wrap shadow-md p-4 fixed top-0 w-full z-30 bg-white">
-    <div class="flex items-center flex-shrink-0  mr-6">
-      <span class="font-semibold text-xl tracking-tight">workout-share</span>
+    <div class="flex items-center flex-shrink-0">
+      <span class="font-semibold text-xl tracking-tight mb-2">workout-share</span>
     </div>
-    <HeaderSpMenu />
-    <div class="w-full hidden flex-grow md:flex md:items-center justify-end md:w-auto">
-      <div class="mr-10">
+    <div class="flex-grow flex items-center justify-end w-auto">
+      <div class="mr-6 md:mr-10">
         <HeaderHome />
         <HeaderSerch />
         <HeaderNotification />
@@ -24,7 +23,6 @@ import HeaderSerch from './HeaderSerch.vue'
 import HeaderNotification from './HeaderNotification.vue'
 import HeaderMessage from './HeaderMessage.vue'
 import HeaderUserinfo from './HeaderUserinfo.vue'
-import HeaderSpMenu from './HeaderSpMenu.vue'
 export default {
   components: {
     HeaderHome,
@@ -32,7 +30,6 @@ export default {
     HeaderNotification,
     HeaderMessage,
     HeaderUserinfo,
-    HeaderSpMenu,
   }
 }
 </script>
