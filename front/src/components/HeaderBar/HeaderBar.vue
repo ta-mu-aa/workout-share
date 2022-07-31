@@ -6,6 +6,7 @@
     <HeaderSpMenu />
     <div class="w-full hidden flex-grow md:flex md:items-center justify-end md:w-auto">
       <div class="mr-10">
+        <HeaderHome />
         <HeaderSerch />
         <HeaderNotification />
         <HeaderMessage />
@@ -18,6 +19,7 @@
 </template>
 
 <script>
+import HeaderHome from './HeaderHome.vue'
 import HeaderSerch from './HeaderSerch.vue'
 import HeaderNotification from './HeaderNotification.vue'
 import HeaderMessage from './HeaderMessage.vue'
@@ -25,6 +27,7 @@ import HeaderUserinfo from './HeaderUserinfo.vue'
 import HeaderSpMenu from './HeaderSpMenu.vue'
 export default {
   components: {
+    HeaderHome,
     HeaderSerch,
     HeaderNotification,
     HeaderMessage,
