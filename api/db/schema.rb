@@ -15,8 +15,8 @@ ActiveRecord::Schema.define(version: 2022_07_31_154843) do
   create_table "users", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.string "email"
-    t.string "password"
-    t.string "confirmpassword"
+    t.string "password_digest"
+    t.string "password_confirmation"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
