@@ -1,4 +1,5 @@
 class User < ApplicationRecord
+  before_create :set_uuid
   has_secure_password
 
   validates :name, presence: true,      
@@ -15,4 +16,13 @@ class User < ApplicationRecord
                       format: { with: VALID_PASSWORD_REGEX }
   validates :password_confirmation, presence: true
 
+  
+  private
+    def set_uuid
+      # id未設定、またはすでに同じidのレコードが存在する場合はループに入る
+      while self.id.blank? || User.find_by(id: self.id).present? do
+        # ランダムな20文字をidに設定
+        self.id = SecureRandom.alphanumeric(20)
+      end
+    end
 end
