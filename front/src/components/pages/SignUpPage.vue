@@ -2,10 +2,10 @@
   <div class="flex justify-center h-full py-14">
     <div class="container lg: py-14">
       <form class="w-full max-w-sm m-auto">
-        <UserFormName />
-        <UserFormEmail />
-        <UserFormPassword />
-        <UserFormConfirm />
+        <UserFormName v-model:user-name="userName" />
+        <UserFormEmail v-model:user-email="userEmail" />
+        <UserFormPassword v-model:user-password="userPassword" />
+        <UserFormConfirm v-model:user-confirm="userConfirm" />
         <div class="md:flex md:items-center mb-8">
           <div class="md:w-1/3"></div>
           <span class="text-xs">
@@ -34,7 +34,7 @@ import UserFormEmail from '../UsreForm/UserFormEmail.vue'
 import UserFormPassword from '../UsreForm/UserFormPassword.vue'
 import UserFormConfirm from '../UsreForm/UserFormConfirm.vue'
 const API_URL = import.meta.env.VITE_API_URL
-export default {
+export default  {
   components: {
     UserFormName,
     UserFormEmail,
@@ -43,17 +43,22 @@ export default {
   },
   data() {
     return {
+      userName: '',
+      userEmail: '',
+      userPassword: '',
+      userConfirm: '' 
     }
   },
   methods: {
-    registerDataSubmit() {
-      this.axios.get(`${API_URL}/user/`)
-        .then((response) => {
-          console.log(response)
-        })
-        .catch((error) => {
-          console.log(error)
-        })
+    async registerDataSubmit() {
+      const postUserInfo = await this.axios.post(`${API_URL}/user/`, {
+          name: this.userName,
+          email: this.userEmail,
+          password: this.userPassword,
+          password_confirmation: this.userConfirm
+      })
+      const createUserResponse = postUserInfo.data
+      console.log(createUserResponse)
     }
   }
 }
