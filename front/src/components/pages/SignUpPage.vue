@@ -22,7 +22,7 @@
               :class="{ 'bg-blue-300': disabled === true, 'bg-blue-500': disabled === false}"
               class="shadow  focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded"
               type="button">
-              新規会員登録
+              新規登録
             </button>
           </div>
         </div>
@@ -74,39 +74,32 @@ export default  {
   updated() {
     // フォームに入力された値のバリデーション
     if (this.userName === '' && this.userName.length > 30) {
-      console.log('名前文字数')
       this.disabled = true
       return
     }
     if (this.userEmail === '' && this.userEmail.length > 100) {
-      console.log('メールアドレス文字数')
       this.disabled = true
       return
     }
     const emailReg = new RegExp(/^[A-Za-z0-9]{1}[A-Za-z0-9_.-]*@{1}[A-Za-z0-9_.-]{1,}\.[A-Za-z0-9]{1,}$/)
     if (!emailReg.test(this.userEmail)) {
-      console.log('メールアドレスフォーマットが違います')
       this.disabled = true
       return
     }
     if (this.userPassword === '' && this.userPassword.length < 8) {
-      console.log('パスワード文字数下限')
       this.disabled = true
       return
     }
     if (this.userPassword.length > 100) {
-      console.log('パスワード文字数上限')
       this.disabled = true
       return
     }
     const passwordReg = /^(?=.*?[a-z])(?=.*?\d)[a-z\d]{8,100}$/i
     if (!passwordReg.test(this.userPassword)) {
-      console.log('パスワードフォーマットが違います')
       this.disabled = true
       return
     }
     if (this.userPassword !== this.userConfirm) {
-      console.log('確認用パスワードと異なります')
       this.disabled = true
       return
     }
