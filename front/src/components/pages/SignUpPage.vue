@@ -16,8 +16,11 @@
         <div class="md:flex md:items-center">
           <div class="md:w-1/3"></div>
           <div class="md:w-2/3">
-            <button @click="registerDataSubmit"
-              class="shadow bg-blue-500 hover:bg-blue-400 duration-200 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded"
+            <button 
+              @click="clickSubmitButton" 
+              :disabled="disabled"
+              :class="{ 'bg-blue-300': disabled === true, 'bg-blue-500': disabled === false}"
+              class="shadow  focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded"
               type="button">
               新規会員登録
             </button>
@@ -43,6 +46,7 @@ export default  {
   },
   data() {
     return {
+      disabled: true,
       userName: '',
       userEmail: '',
       userPassword: '',
@@ -50,17 +54,64 @@ export default  {
     }
   },
   methods: {
+  // 新規登録時のデータをAPIに送信する
     async registerDataSubmit() {
       const postUserInfo = await this.axios.post(`${API_URL}/user/`, {
-          name: this.userName,
-          email: this.userEmail,
-          password: this.userPassword,
-          password_confirmation: this.userConfirm
+        name: this.userName,
+        email: this.userEmail,
+        password: this.userPassword,
+        password_confirmation: this.userConfirm
       })
-      const createUserResponse = postUserInfo.data
+      const createUserResponse = postUserInfo.data  
       console.log(createUserResponse)
+    },
+  // 新規会員登録ボタンを押した時の処理
+    clickSubmitButton() {
+      this.registerDataSubmit()
+    },
+  },
+
+  updated() {
+    // フォームに入力された値のバリデーション
+    if (this.userName === '' && this.userName.length > 30) {
+      console.log('名前文字数')
+      this.disabled = true
+      return
     }
-  }
+    if (this.userEmail === '' && this.userEmail.length > 100) {
+      console.log('メールアドレス文字数')
+      this.disabled = true
+      return
+    }
+    const emailReg = new RegExp(/^[A-Za-z0-9]{1}[A-Za-z0-9_.-]*@{1}[A-Za-z0-9_.-]{1,}\.[A-Za-z0-9]{1,}$/)
+    if (!emailReg.test(this.userEmail)) {
+      console.log('メールアドレスフォーマットが違います')
+      this.disabled = true
+      return
+    }
+    if (this.userPassword === '' && this.userPassword.length < 8) {
+      console.log('パスワード文字数下限')
+      this.disabled = true
+      return
+    }
+    if (this.userPassword.length > 100) {
+      console.log('パスワード文字数上限')
+      this.disabled = true
+      return
+    }
+    const passwordReg = /^(?=.*?[a-z])(?=.*?\d)[a-z\d]{8,100}$/i
+    if (!passwordReg.test(this.userPassword)) {
+      console.log('パスワードフォーマットが違います')
+      this.disabled = true
+      return
+    }
+    if (this.userPassword !== this.userConfirm) {
+      console.log('確認用パスワードと異なります')
+      this.disabled = true
+      return
+    }
+    this.disabled = false
+  },
 }
 </script>
 
