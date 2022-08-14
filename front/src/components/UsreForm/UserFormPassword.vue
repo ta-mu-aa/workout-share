@@ -5,12 +5,10 @@
         パスワード
       </label>
     </div>
-    <div class="md:w-2/3">
-      <input 
-        :value="userPassword" 
-        @input="$emit('update:userPassword', $event.target.value)"
+    <div class="md:w-4/5">
+      <input :value="userPassword" @input="$emit('update:userPassword', $event.target.value)"
         class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-blue-500"
-        id="inline-password" type="password" placeholder="******************">
+        id="inline-password" type="password" placeholder="8文字以上で半角英数字を両方含めてください">
     </div>
   </div>
 </template>
@@ -25,4 +23,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+input::placeholder {
+  font-size: 0.7em;
+}
 </style>
