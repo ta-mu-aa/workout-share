@@ -5,12 +5,12 @@
         名前
       </label>
     </div>
-    <div class="md:w-2/3">
+    <div class="md:w-4/5">
       <input 
         :value="userName" 
         @input="$emit('update:userName', $event.target.value)"
         class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-blue-500"
-        id="inline-full-name" type="text" placeholder="筋肉太郎">
+        id="inline-full-name" type="text" placeholder="30文字以内で入力してください">
     </div>
   </div>
 </template>
@@ -25,4 +25,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+input::placeholder {
+  font-size: 0.8em;
+}
 </style>

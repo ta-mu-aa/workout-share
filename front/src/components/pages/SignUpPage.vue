@@ -1,6 +1,7 @@
 <template>
   <div class="flex justify-center h-full py-14">
     <div class="container lg: py-14">
+      <ErrorBanner :bannerShow="errorBanner" :bannerMessage="errorMessage" />
       <form class="w-full max-w-sm m-auto">
         <UserFormName v-model:user-name="userName" />
         <UserFormEmail v-model:user-email="userEmail" />
@@ -16,9 +17,7 @@
         <div class="md:flex md:items-center">
           <div class="md:w-1/3"></div>
           <div class="md:w-2/3">
-            <button 
-              @click="clickSubmitButton" 
-              :disabled="disabled"
+            <button @click="clickSubmitButton" :disabled="disabled"
               :class="{ 'bg-blue-300': disabled === true, 'bg-blue-500': disabled === false}"
               class="shadow  focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded"
               type="button">
@@ -32,6 +31,7 @@
 </template>
 
 <script>
+import ErrorBanner from '../UsreForm/ErrorBanner.vue'
 import UserFormName from '../UsreForm/UserFormName.vue'
 import UserFormEmail from '../UsreForm/UserFormEmail.vue'
 import UserFormPassword from '../UsreForm/UserFormPassword.vue'
@@ -39,6 +39,7 @@ import UserFormConfirm from '../UsreForm/UserFormConfirm.vue'
 const API_URL = import.meta.env.VITE_API_URL
 export default  {
   components: {
+    ErrorBanner,
     UserFormName,
     UserFormEmail,
     UserFormPassword,
@@ -47,6 +48,8 @@ export default  {
   data() {
     return {
       disabled: true,
+      errorBanner: false,
+      errorMessage: '',
       userName: '',
       userEmail: '',
       userPassword: '',
@@ -56,14 +59,29 @@ export default  {
   methods: {
   // 新規登録時のデータをAPIに送信する
     async registerDataSubmit() {
-      const postUserInfo = await this.axios.post(`${API_URL}/user/`, {
-        name: this.userName,
-        email: this.userEmail,
-        password: this.userPassword,
-        password_confirmation: this.userConfirm
-      })
-      const createUserResponse = postUserInfo.data  
-      console.log(createUserResponse)
+      try {
+          const postUserInfo = await this.axios.post(`${API_URL}/user/`, {
+          name: this.userName,
+          email: this.userEmail,
+          password: this.userPassword,
+          password_confirmation: this.userConfirm
+        })
+        const createUserResponse = postUserInfo.data  
+        console.log(createUserResponse)
+      }
+      catch (error) {
+        const responseStatusCode = error.response.status
+        if (responseStatusCode === 400) {
+          this.errorMessage = '正しい情報を入力してください'
+          this.errorBanner = true
+          return
+        }
+        if (responseStatusCode === 409) {
+          this.errorMessage = '既に登録済みのメールアドレスです'
+          this.errorBanner = true
+          return
+        }
+      }
     },
   // 新規会員登録ボタンを押した時の処理
     clickSubmitButton() {
