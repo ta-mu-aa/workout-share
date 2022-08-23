@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+  include TokenGenerateService   # Token生成モジュール
+
   before_create :set_uuid
   has_secure_password
 
