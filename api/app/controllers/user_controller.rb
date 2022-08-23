@@ -1,6 +1,8 @@
 class UserController < ApplicationController
+  before_action :authenticate_user
+  
   def index
-    render json:{data: "data"}, status:200
+    render json: current_user.as_json(only: [:id, :name, :email, :created_at])
   end
 
   def create
