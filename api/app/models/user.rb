@@ -27,6 +27,10 @@ class User < ApplicationRecord
   def forget
     update_column(:refresh_jti, nil)
   end
+
+  def response_json(payload = {})
+    as_json(only: [:id, :name, :email]).merge(payload).with_indifferent_access
+  end
   
   private
     def set_uuid

@@ -1,5 +1,5 @@
 class UserController < ApplicationController
-  before_action :authenticate_user
+  before_action :authenticate_user, except: [:create]
   
   def index
     render json: current_user.as_json(only: [:id, :name, :email, :created_at])
