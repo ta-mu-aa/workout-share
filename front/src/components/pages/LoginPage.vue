@@ -29,11 +29,13 @@
 <script>
 import UserFormEmail from '../UsreForm/UserFormEmail.vue'
 import UserFormPassword from '../UsreForm/UserFormPassword.vue'
+import { authLoginMethods }  from '../../../mixins/auth.js'
 export default {
   components: {
     UserFormEmail,
     UserFormPassword,
   },
+  mixins: [authLoginMethods],
   data() {
     return {
       userEmail: '',
@@ -49,8 +51,19 @@ export default {
         }
       }
       const postUserInfo = await this.axios.post(`/auth_token/`, loginParams)
-      const loginUserResponse = postUserInfo.data
-      console.log(loginUserResponse)
+      .then(response => this.authSuccessful(response.data))
+      // .catch(error => this.authFailure(error))
+    },
+    authSuccessful(response) {
+    // mixinsで記述しているメソッドを呼び出す
+      this.login(response)
+      this.$router.push('/home')
+    },
+    authFailure(error) {
+      console.log('失敗')
+      if (error && error.response.status === 404) {
+        console.log(error)
+      }
     }
   }
 }
