@@ -15,6 +15,25 @@ export const authLoginMethods = {
   // ログイン時のメソッド
     login (response) {
       this.setAuth(response)
+    },
+
+  // Vuexの値を初期値に戻す
+    resetVuex() {
+      this.setAuth({ token: null, expires: 0, user: null })
+    },
+
+  // axiosのレスポンス401を許容する
+    resolveUnauthorized(status) {
+      return (status >= 200 && status < 300) || (status === 401)
+    },
+
+    // ログアウト時のメソッド
+    async logout() {
+      await this.axios.delete(
+        '/auth_token/',
+        { validateStatus: status => this.resolveUnauthorized(status) }
+      )
+      this.resetVuex()
     }
 	}
 }

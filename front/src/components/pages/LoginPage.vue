@@ -50,9 +50,9 @@ export default {
           password: this.userPassword
         }
       }
-      const postUserInfo = await this.axios.post(`/auth_token/`, loginParams)
+      const postUserInfo = await this.axios.post(`/auth_token`, loginParams)
       .then(response => this.authSuccessful(response.data))
-      // .catch(error => this.authFailure(error))
+      .catch(error => this.authFailure(error))
     },
     authSuccessful(response) {
     // mixinsで記述しているメソッドを呼び出す
