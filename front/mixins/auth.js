@@ -1,4 +1,5 @@
 import jwtDecode from 'jwt-decode'
+import { store } from '../store/index.js'
 
 export const authLoginMethods = {
   methods: {
@@ -7,10 +8,10 @@ export const authLoginMethods = {
       const exp = expires * 1000
       const jwtPayload = (token) ? jwtDecode(token) : {}
       
-      this.$store.dispatch('getAuthToken', token)
-      this.$store.dispatch('getAuthExpires', exp)
-      this.$store.dispatch('getCurrentUser', user)
-      this.$store.dispatch('getAuthPayload', jwtPayload)
+      store.dispatch('getAuthToken', token)
+      store.dispatch('getAuthExpires', exp)
+      store.dispatch('getCurrentUser', user)
+      store.dispatch('getAuthPayload', jwtPayload)
     },
   // ログイン時のメソッド
     login (response) {
