@@ -55,7 +55,7 @@ export default {
       .catch(error => this.authFailure(error))
     },
     authSuccessful(response) {
-    // mixinsで記述しているメソッドを呼び出す
+    // mixinsで記述しているメソッドを呼び出す 
       this.login(response)
       this.$router.push('/home')
     },
