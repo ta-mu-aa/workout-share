@@ -2,7 +2,9 @@ import { createRouter, createWebHistory } from "vue-router";
 import HomePage from "../components/pages/HomePage.vue";
 import LoginPage from "../components/pages/LoginPage.vue";
 import SignUpPage from "../components/pages/SignUpPage.vue";
-import  silent_refresh  from '../../plugins/silent-refresh-token.js'
+import silent_refresh  from '../../plugins/silent-refresh-token.js'
+import { authLoginMethods } from '../../mixins/auth.js'
+import axios from 'axios'
 
 const routes = [
   {
@@ -27,12 +29,21 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach(async (to) => {
-  if (to.fullPath === '/login' || to.fullPath === '/signup') {
-    return
+const auth = authLoginMethods.methods
+router.beforeEach(async () => {
+
+  // ログインしているユーザー情報がセットされていなければ取得する
+  if (!auth.isExistUser()) {
+    await axios.post(
+      '/auth_token/refresh',
+      {},
+      { validateStatus: status => auth.resolveUnauthorized(status) }
+    )
+      .then(response => auth.login(response.data))
   }
-  // 画面遷移時にトークンの有効期限が切れているか判断する
-  silent_refresh()
+
+  // 画面遷移時にトークンの有効期限が切れていないか判断する
+  await silent_refresh()
 })
 
 export default router
