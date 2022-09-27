@@ -2,7 +2,10 @@ import { createRouter, createWebHistory } from "vue-router";
 import HomePage from "../components/pages/HomePage.vue";
 import LoginPage from "../components/pages/LoginPage.vue";
 import SignUpPage from "../components/pages/SignUpPage.vue";
-import  silent_refresh  from '../../plugins/silent-refresh-token.js'
+import silent_refresh  from '../../plugins/silent-refresh-token.js'
+import { authLoginMethods } from '../../mixins/auth.js'
+// import { store } from '../../store/index.js'
+import axios from 'axios'
 
 const routes = [
   {
@@ -27,12 +30,46 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach(async (to) => {
-  if (to.fullPath === '/login' || to.fullPath === '/signup') {
+const auth = authLoginMethods.methods
+router.beforeEach(async (to,from) => {
+  // ログアウト時の画面遷移では何もしない
+  if (from.path !== '/' && to.path === '/login') {
     return
   }
-  // 画面遷移時にトークンの有効期限が切れているか判断する
-  silent_refresh()
+  // 認証が失敗した際の画面遷移では何もしない
+  if (to.query.auth) {
+    return
+  }
+  // ログインしているユーザー情報がセットされていなければ取得する
+  if (!auth.isExistUser()) {
+    await axios.post(
+      '/auth_token/refresh',
+      {},
+      { validateStatus: status => auth.resolveUnauthorized(status) }
+    )
+      .then(response => auth.login(response.data))
+  }
+
+  // 画面遷移時にトークンの有効期限が切れていないか判断する
+  await silent_refresh()
+
+  // ログインしている場合
+  if (to.path === '/login' || to.path === '/signup') {
+    if (auth.loggedIn()) {
+      console.log('ログイン済みユーザーです')
+      router.push('/home')
+    }
+  }
+  else {
+    // ログインしていない場合
+    if (!auth.loggedIn()) {       
+      // ユーザー以外の値が存在する可能性があるので全てを削除する
+      await auth.logout()
+
+      console.log('まずはログインしてください')
+      router.push({ path:'login', query:{auth:'uncertified'}})
+    }
+  }
 })
 
 export default router
