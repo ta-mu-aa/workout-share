@@ -7,7 +7,7 @@
     <div class="mx-auto max-w-7xl py-3 px-3 sm:px-6 lg:px-8">
       <div class="flex flex-wrap items-center justify-between">
         <div class="flex w-0 flex-1 items-center">
-          <p class="ml-3 truncate font-medium text-white">
+          <p class="ml-3 whitespace-pre-line font-medium text-white break-normal">
             {{toast.message}}
           </p>
         </div>
@@ -31,7 +31,12 @@ export default {
     },
     setToaster() {
       if (!!this.toast.message) {
-        setTimeout(() => {this.resetToast()}, this.toast.timeout)
+        setTimeout(() => {
+          if (this.toast.timeout === -1) {
+            return
+          }
+          this.resetToast()
+        }, this.toast.timeout)
         return true
       }
     }
