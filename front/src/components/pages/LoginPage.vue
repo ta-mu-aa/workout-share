@@ -60,9 +60,9 @@ export default {
       this.$router.push('/home')
     },
     authFailure(error) {
-      console.log('失敗')
       if (error && error.response.status === 404) {
-        console.log(error)
+        const message = 'ユーザーが見つかりません'
+        this.$store.dispatch('getToast', {message})
       }
     }
   }
