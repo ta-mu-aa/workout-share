@@ -10,6 +10,11 @@ export const store = createStore({
         token: null,
         expires: 0,
         payload: {}
+      },
+      toast: {
+        message: null,
+        color: 'bg-red-500',
+        timeout: 4000
       }
     }
   },
@@ -25,6 +30,9 @@ export const store = createStore({
     },
     setAuthPayload (state, payload) {
       state.auth.payload = payload
+    },
+    setToast (state, payload) {
+      state.toast = payload
     }
   },
   actions: {
@@ -41,6 +49,11 @@ export const store = createStore({
     getAuthPayload ({ commit }, jwtPayload) {
       jwtPayload = jwtPayload || {}
       commit('setAuthPayload', jwtPayload)
+    },
+    getToast({ commit }, { message, color, timeout }) {
+      color = color || 'bg-red-500'
+      timeout = timeout || 4000
+      commit('setToast', { message, color, timeout})
     }
   },
   getters: {
