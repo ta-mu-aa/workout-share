@@ -3,6 +3,7 @@ import HomePage from "../components/pages/HomePage.vue";
 import LoginPage from "../components/pages/LoginPage.vue";
 import SignUpPage from "../components/pages/SignUpPage.vue";
 import NotFoundError from '../components/pages/error/NotFound.vue';
+import InternalServerError from '../components/pages/error/InternalServerError.vue';
 import silent_refresh  from '../../plugins/silent-refresh-token.js'
 import { authLoginMethods } from '../../mixins/auth.js'
 import { store } from '../../store/index.js'
@@ -23,6 +24,11 @@ const routes = [
     path: "/login",
     name: "Login",
     component: LoginPage,
+  },
+  {
+    path: '/error',
+    name: 'InternalServerError',
+    component: InternalServerError,
   },
   // 上から順にマッチするものを探すため一番下に記述
   {
