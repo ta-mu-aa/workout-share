@@ -1,7 +1,6 @@
 <template>
   <div class="flex justify-center h-full py-14">
     <div class="container lg: py-14">
-      <ErrorBanner :bannerShow="errorBanner" :bannerMessage="errorMessage" />
       <form class="w-full max-w-sm m-auto">
         <UserFormName v-model:user-name="userName" />
         <UserFormEmail v-model:user-email="userEmail" />
@@ -31,7 +30,6 @@
 </template>
 
 <script>
-import ErrorBanner from '../UsreForm/ErrorBanner.vue'
 import UserFormName from '../UsreForm/UserFormName.vue'
 import UserFormEmail from '../UsreForm/UserFormEmail.vue'
 import UserFormPassword from '../UsreForm/UserFormPassword.vue'
@@ -39,7 +37,6 @@ import UserFormConfirm from '../UsreForm/UserFormConfirm.vue'
 const API_URL = import.meta.env.VITE_API_URL
 export default  {
   components: {
-    ErrorBanner,
     UserFormName,
     UserFormEmail,
     UserFormPassword,
@@ -48,8 +45,6 @@ export default  {
   data() {
     return {
       disabled: true,
-      errorBanner: false,
-      errorMessage: '',
       userName: '',
       userEmail: '',
       userPassword: '',
@@ -72,13 +67,13 @@ export default  {
       catch (error) {
         const responseStatusCode = error.response.status
         if (responseStatusCode === 400) {
-          this.errorMessage = '正しい情報を入力してください'
-          this.errorBanner = true
+          const message = '正しい情報を入力してください'
+          this.$store.dispatch('getToast', {message})
           return
         }
         if (responseStatusCode === 409) {
-          this.errorMessage = '既に登録済みのメールアドレスです'
-          this.errorBanner = true
+          const message = '既に登録済みのメールアドレスです'
+          this.$store.dispatch('getToast', { message })
           return
         }
       }
