@@ -15,10 +15,14 @@ export const store = createStore({
         message: null,
         color: 'bg-red-500',
         timeout: 4000
-      }
+      },
+      postFormModal: {
+        isVisible: false
+      },
     }
   },
   mutations: {
+  // ユーザー認証
     setCurrentUser (state, payload) {
     state.user.current = payload
     },
@@ -31,11 +35,17 @@ export const store = createStore({
     setAuthPayload (state, payload) {
       state.auth.payload = payload
     },
+  // グローバルトースター
     setToast (state, payload) {
       state.toast = payload
+    },
+  // 投稿用フォーム表示切り替え
+    setPostFormModal(state, payload) {
+      state.postFormModal.isVisible = payload
     }
   },
   actions: {
+  // ユーザー認証
     getCurrentUser ({ commit }, user) {
       commit('setCurrentUser', user)
     },
@@ -50,13 +60,19 @@ export const store = createStore({
       jwtPayload = jwtPayload || {}
       commit('setAuthPayload', jwtPayload)
     },
+  // グローバルトースター
     getToast({ commit }, { message, color, timeout }) {
       color = color || 'bg-red-500'
       timeout = timeout || 4000
       commit('setToast', { message, color, timeout})
+    },
+  // 投稿用フォームモーダル表示切り替え
+    getPostFormModal({ commit }, postModalPayload) {
+        commit('setPostFormModal', postModalPayload)
     }
   },
   getters: {
+  // ユーザー認証情報
     auth_token (state) {
       return  state.auth.token
     },
@@ -68,6 +84,10 @@ export const store = createStore({
     },
     current_user (state) {
       return  state.user.current || {}
+    },
+  // 投稿フォームモーダル
+    postFormModal(state) {
+      return state.postFormModal.isVisible
     }
   }
 })
