@@ -7,8 +7,8 @@
       <div class="mr-6 md:mr-10">
         <HeaderHome />
         <HeaderSerch />
-        <HeaderNotification />
         <HeaderMessage />
+        <HeaderNotification />
       </div>
       <div class="flex-shrink-0 flex hover:bg-blue-00 rounded-full mr-2">
         <HeaderUserinfo />

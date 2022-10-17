@@ -1,12 +1,34 @@
 <template>
-  <a href="#responsive-header" class="inline-block mt-0  hover: mr-4">
-    <svg class="md:mr-4 h-5 w-5 md:h-6 md:w-6 group-hover:opacity-60" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
-  </a>
+    <div class="inline-block cursor-pointer" @click="showPostFormModal">
+    <svg id="postform" class="md:mr-4 h-5 w-5 md:h-7 md:w-7 hover:" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> 
+      <PostFormModal />
+    </div>
 </template>
 
 <script>
+  import PostFormModal from '../../components/PostForm/PostFormModal.vue' 
+  import silent_refresh_method from '../../../plugins/silent-refresh-token.js'
 export default {
-  
+  components: {
+    PostFormModal
+  },
+  data() {
+    return {
+      showModalJudge: false  
+    }
+  },
+  methods: {
+    async showPostFormModal(e) {      
+      console.log(e.path[0].id)
+      // モーダル内をクリックした際は何もしない
+      if (e.path[0].id === 'postform' || e.path[0].id === 'modal-base') {
+        this.showModalJudge = !this.showModalJudge
+        this.$store.dispatch('getPostFormModal',  this.showModalJudge )
+      }
+
+      await silent_refresh_method();
+    }
+  }
 }
 </script>
 
