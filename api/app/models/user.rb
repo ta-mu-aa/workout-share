@@ -1,5 +1,7 @@
 class User < ApplicationRecord
   include TokenGenerateService   # Token生成モジュール
+ # アソシエーション
+  has_many :posts
 
   before_create :set_uuid
   has_secure_password
