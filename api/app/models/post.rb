@@ -1,16 +1,28 @@
 class Post < ApplicationRecord
   # アソシエーション
   belongs_to :user
+  
+  before_create :set_post_uuid
 
   validates :body, presence: true,      
                       length: { maximum: 400 }
   validates :user_id, presence:true
   validate :confirm_user_id
    
-# ユーザーIDが登録されているユーザーのものか確認
+  
+  private
+  # ユーザーIDが登録されているユーザーのものか確認
   def confirm_user_id
     unless User.find_by(id: user_id)
       errors.add(:user_id, "ユーザーが存在しません")
+    end
+  end
+
+  def set_post_uuid
+    # id未設定、またはすでに同じidのレコードが存在する場合はループに入る
+    while self.id.blank? || Post.find_by(id: self.id).present? do
+      # ランダムな数字をidに設定
+      self.id = SecureRandom.random_number(1 << 32)
     end
   end
  end
