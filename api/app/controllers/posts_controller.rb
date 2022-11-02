@@ -7,9 +7,9 @@ class PostsController < ApplicationController
     if post.save
       render json: post
     else
-      if post.errors === ["is too long (maximum is 400 characters)"]
+      if post.errors["body"] === ["is too long (maximum is 400 characters)"]
         render json: { message: '400字以内で入力してください', data: post.errors["body"]}, status:400
-      elsif post.errors === ["can't be blank"]
+      elsif post.errors["body"] === ["can't be blank"]
         render json: { message: '文字を入力してください', data: post.errors["body"] }, status:400    
       else 
         render json: { message: '投稿元のユーザーが見つかりませんでした', data: post.errors }, status: 404

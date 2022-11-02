@@ -7,7 +7,7 @@
       class="caret-slate-500 border-b resize-none outline-none" 
       placeholder="投稿内容を入力" cols="20" rows="10"
       >
-    </textarea>
+      </textarea>
       <div class="text-right py-3">
         <button @click="submitPostContent" 
         :disabled="buttonDisabled" 
