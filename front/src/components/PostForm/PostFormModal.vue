@@ -5,7 +5,7 @@
       <textarea 
       v-model="postContent.body" 
       class="caret-slate-500 border-b resize-none outline-none" 
-      placeholder="投稿内容を入力" cols="20" rows="10"
+      placeholder="投稿内容を入力" cols="20" rows="10" maxlength="400"
       >
       </textarea>
       <div class="text-right py-3">
