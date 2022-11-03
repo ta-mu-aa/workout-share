@@ -1,5 +1,5 @@
 <template>
-<div>
+<div v-for="post in showPostList" :key="post.id">
   <div class="flex flex-shrink-0 p-4 pb-0">
     <a href="#" class="flex-shrink-0 group block">
       <div class="flex items-center">
@@ -12,11 +12,9 @@
       </div>
     </a>
   </div>
-
   <div class="pl-16">
     <p class="text-base width-auto font-medium  flex-shrink">
-      テキストが入ります
-      テキストが入りますテキストが入りますテキストが入りますテキストが入りますテキストが入りますテキストが入りますテキストが入りますテキストが入りますテキストが入りますテキストが入ります
+      {{ post.body }}
       <span class="text-blue-400"># リンクが入ります</span>
     </p>
 
@@ -37,11 +35,20 @@
 import PostUserinfo from './PostUserinfo.vue'
 import PostReply from './PostReply.vue'
 import PostFavorite from './PostFavorite.vue'
+import post_list_fetch  from '../../../plugins/post-list-fetch.js'
 export default {
   components: {
     PostUserinfo,
     PostReply,
     PostFavorite
+  },
+  computed: {
+    showPostList(){
+      return this.$store.getters.postList
+    }
+  },
+  async mounted() {
+    await post_list_fetch()
   }
 }
 </script>
