@@ -19,6 +19,7 @@ export const store = createStore({
       postFormModal: {
         isVisible: false
       },
+      postList: null
     }
   },
   mutations: {
@@ -42,6 +43,10 @@ export const store = createStore({
   // 投稿用フォーム表示切り替え
     setPostFormModal(state, payload) {
       state.postFormModal.isVisible = payload
+    },
+  // 投稿一覧を取得
+    setPostList(state, payload) {
+      state.postList = payload
     }
   },
   actions: {
@@ -68,7 +73,11 @@ export const store = createStore({
     },
   // 投稿用フォームモーダル表示切り替え
     getPostFormModal({ commit }, postModalPayload) {
-        commit('setPostFormModal', postModalPayload)
+      commit('setPostFormModal', postModalPayload)
+    },
+  // 投稿一覧を取得
+    getPostList({ commit }, postList) {
+      commit('setPostList', postList)
     }
   },
   getters: {
@@ -88,6 +97,10 @@ export const store = createStore({
   // 投稿フォームモーダル
     postFormModal(state) {
       return state.postFormModal.isVisible
+    },
+  // 投稿一覧
+    postList(state) {
+      return state.postList
     }
   }
 })
