@@ -17,10 +17,14 @@
 <script>
 import Post from '../PostList/Post.vue'
 import HeaderBar from '../HeaderBar/HeaderBar.vue'
+import post_list_fetch from '../../../plugins/post-list-fetch.js'
 export default {
   components: {
     Post,
     HeaderBar
+  },
+  async mounted() {
+    await post_list_fetch()
   }
 }
 </script>

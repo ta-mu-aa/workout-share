@@ -19,7 +19,7 @@ export const store = createStore({
       postFormModal: {
         isVisible: false
       },
-      postList: null
+      postList: []
     }
   },
   mutations: {
@@ -100,7 +100,14 @@ export const store = createStore({
     },
   // 投稿一覧
     postList(state) {
-      return state.postList
+      // 投稿リストを日付順に並び替える
+      let postListByDate =  Object.keys(state.postList).map(key => {
+        return state.postList[key];
+      })
+      postListByDate.sort(function (a, b) {
+        return (a.created_at > b.created_at) ? -1 : 1;  //オブジェクト昇順ソート
+      })
+      return postListByDate
     }
   }
 })

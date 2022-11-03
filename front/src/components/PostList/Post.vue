@@ -35,7 +35,6 @@
 import PostUserinfo from './PostUserinfo.vue'
 import PostReply from './PostReply.vue'
 import PostFavorite from './PostFavorite.vue'
-import post_list_fetch  from '../../../plugins/post-list-fetch.js'
 export default {
   components: {
     PostUserinfo,
@@ -43,12 +42,9 @@ export default {
     PostFavorite
   },
   computed: {
-    showPostList(){
+    showPostList() {
       return this.$store.getters.postList
     }
-  },
-  async mounted() {
-    await post_list_fetch()
   }
 }
 </script>
