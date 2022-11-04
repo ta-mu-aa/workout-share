@@ -6,7 +6,7 @@
         <PostUserinfo />
         <div class="ml-3">
           <span class="text-sm leading-5 ml-2 font-medium text-gray-400">
-            8月1日
+            {{ postedTime(post.created_at)}}
           </span>
         </div>
       </div>
@@ -40,6 +40,13 @@ export default {
     PostUserinfo,
     PostReply,
     PostFavorite
+  },
+  methods: {
+    postedTime(time) {
+      const postedMonth = time.slice(5, 7)
+      const postedDate = time.slice(8, 10)
+      return postedMonth + '月' + postedDate + '日'
+    }
   },
   computed: {
     showPostList() {
