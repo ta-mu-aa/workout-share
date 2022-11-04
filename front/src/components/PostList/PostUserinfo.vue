@@ -5,7 +5,7 @@
     </div>
     <div class="ml-3">
       <span class="text-sm leading-6 font-medium ">
-        筋トレ 太郎 
+        {{ currentUserInfo.name }}
       </span>
     </div>
   </a>
@@ -13,6 +13,10 @@
 
 <script>
 export default {
-  
+  computed: {
+    currentUserInfo() {
+      return this.$store.getters.current_user
+    }
+  },
 }
 </script>
