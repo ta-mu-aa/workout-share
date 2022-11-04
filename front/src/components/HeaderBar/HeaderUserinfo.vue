@@ -8,12 +8,12 @@
         </div>
         <div class="ml-3 hidden md:block">
           <p class="text-sm leading-6 font-medium">
-            筋トレ 太郎
+            {{ currentUserInfo.name }}
           </p>
         </div>
       </div>
     </a>
-    <div class="absolute top-11 p-5 shadow-lg text-sm bg-white" v-if="settingDrower">
+    <div class="absolute top-11 -left-5 min-w-max p-5 shadow-lg text-sm bg-white" v-if="settingDrower">
       <div class="mb-2 cursor-pointer">設定</div>
       <div class="cursor-pointer" @click="Logout">ログアウト</div>
     </div>
@@ -38,6 +38,11 @@ export default {
       this.$router.push('/login')
     }
   },
+  computed: {
+    currentUserInfo() {
+      return this.$store.getters.current_user
+    }
+  },  
   mounted() {
     const $this = this
     document.addEventListener("click", function (e) {
@@ -45,7 +50,7 @@ export default {
       if (target === null) {
         $this.settingDrower = false
       }
-    });
+    })
   }
 }
 </script>

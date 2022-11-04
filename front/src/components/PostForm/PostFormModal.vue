@@ -22,6 +22,7 @@
 </template>
 
 <script>
+import post_list_fetch from '../../../plugins/post-list-fetch.js'
 export default {
   data() {
     return {
@@ -40,7 +41,8 @@ export default {
       },
       postContentSuccess() {
         this.postContent.body = ''
-        this.$emit("closeFormModal", false)
+        this.$emit("closeFormModal", false)  
+        post_list_fetch()
       },
       postContentError(error) {
         const message = error.response.data.message
