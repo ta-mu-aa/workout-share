@@ -20,7 +20,14 @@ export default {
       console.log('update')
     },
     postDelete() {
-      console.log('delete')
+      if (confirm('本当に削除しますか？')) {
+        this.axios.delete(`/posts/${this.selectedPostId}`)
+          .then(() => this.$store.dispatch('deletePost', this.selectedPostId))
+          .catch(() => {
+            const message = '投稿を削除できませんでした'
+            this.$store.dispatch('getToast', {message})
+          })
+      }
     }
   }
 }
