@@ -1,5 +1,5 @@
 <template>
-  <div class="absolute top-14 right-0 min-w-max p-5 shadow-lg text-sm bg-white" v-if="showPostDrawer">
+  <div class="absolute top-14 right-0 min-w-max z-10 p-5 shadow-lg text-sm bg-white" v-if="showPostDrawer">
     <div class="mb-2 cursor-pointer" @click="postUpdate">編集</div>
     <div class="cursor-pointer" @click="postDelete">削除</div>
   </div>
@@ -16,9 +16,6 @@ export default {
     }
   },
   methods: {
-    postUpdate() {
-      console.log('update')
-    },
     postDelete() {
       if (confirm('本当に削除しますか？')) {
         this.axios.delete(`/posts/${this.selectedPostId}`)
@@ -28,6 +25,10 @@ export default {
             this.$store.dispatch('getToast', {message})
           })
       }
+    },
+    postUpdate() {
+      console.log('showupdateArea')
+      this.$emit('showPostUpdateArea', true)
     }
   }
 }
