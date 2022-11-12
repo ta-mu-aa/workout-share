@@ -1,6 +1,6 @@
 <template>
   <div class="absolute top-14 right-0 min-w-max z-10 p-5 shadow-lg text-sm bg-white" v-if="showPostDrawer">
-    <div class="mb-2 cursor-pointer" @click="postUpdate">編集</div>
+    <div class="post-update-button mb-2 cursor-pointer" @click="postUpdate">編集</div>
     <div class="cursor-pointer" @click="postDelete">削除</div>
   </div>
 </template>

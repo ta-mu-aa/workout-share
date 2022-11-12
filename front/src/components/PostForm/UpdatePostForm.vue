@@ -1,7 +1,7 @@
 <template>
   <div v-if="showUpdateArea">
     <div id="modal-base" class="fixed -inset-0 z-30 bg-black bg-opacity-5 flex flex-col justify-center" style=" background-color: rgba(0,0,0,.5);"></div>
-    <div class="fixed top-1/2 left-1/2 bg-white flex flex-col justify-center z-40 w-3/5 h-auto rounded-xl p-8 pb-0 -translate-y-2/4 -translate-x-2/4">
+    <div class="post-update-modal fixed top-1/2 left-1/2 bg-white flex flex-col justify-center z-40 w-3/5 h-auto rounded-xl p-8 pb-0 -translate-y-2/4 -translate-x-2/4">
       <textarea 
         v-model="textareaContent"
         class="caret-slate-500 resize-none outline-none w-full border-b" id="updateForm"

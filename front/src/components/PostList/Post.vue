@@ -41,7 +41,6 @@
   :showUpdateArea = postUpdateArea
   :updatePostContent = identifyPostUpdate
   />
-  {{ identifyPostUpdate }}
 </div>
 </template>
 
@@ -101,9 +100,15 @@ export default {
     // ドロワー表示中に画面をクリックした際にドロワーを閉じる
     const $this = this
     document.addEventListener("click", function (e) {
-      const target = (e.target).closest(".post-drawer-icon")
-      if (target === null && $this.postDrawerBoolean) {
+      const targetPostDrawer = (e.target).closest(".post-drawer-icon")
+      if (targetPostDrawer === null && $this.postDrawerBoolean) {
         $this.showPostDrawer()
+      }
+    // 投稿更新用のモーダルを閉じる
+      const targetPostUpdateArea = (e.target).closest(".post-update-modal")
+      const postUpdateButton = (e.target).closest(".post-update-button")
+      if (targetPostUpdateArea === null && $this.postUpdateArea && !postUpdateButton) {
+        $this.postUpdateArea = false
       }
     })
   }
