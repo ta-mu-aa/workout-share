@@ -53,6 +53,13 @@ export const store = createStore({
         return post.id !== payload
       })
       state.postList = deletedPostArray
+    },
+    updatePost(state, payload) {
+      state.postList.map(post => {
+        if (post.id === payload.id) {
+          post.body = payload.body
+        }
+      })
     }
   },
   actions: {
@@ -87,6 +94,9 @@ export const store = createStore({
     },
     deletePost({ commit }, selectedPost) {
       commit('deletePost', selectedPost)
+    },
+    updatePost({ commit }, updatedPostContent) {
+      commit('updatePost', updatedPostContent)
     }
   },
   getters: {

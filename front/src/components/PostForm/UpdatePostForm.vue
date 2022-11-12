@@ -8,7 +8,7 @@
         placeholder="変更内容を入力" cols="20" rows="10" maxlength="400">
       </textarea>
       <div class="flex justify-end py-2">
-        <button @click="submitPostContent" :disabled="buttonDisabled" class="py-2 px-6  text-white rounded-full text-sm"
+        <button @click="submitPostUpdate" :disabled="buttonDisabled" class="py-2 px-6  text-white rounded-full text-sm"
         :class="{ 'bg-blue-300': buttonDisabled == true, 'bg-blue-400': buttonDisabled == false }">
         更新
         </button>
@@ -31,6 +31,30 @@ export default {
     return {
       textareaContent: '',
       buttonDisabled: false
+    }
+  },
+  methods: {
+    async submitPostUpdate() {
+      await this.axios.patch(`/posts/${this.updatePostContent.id}`, {
+        body: this.textareaContent,
+        user_id: this.$store.getters.current_user.id
+      })
+        .then(response => this.postUpdateSuccess(response.data))
+        .catch(error => console.log(error))
+    },
+    postUpdateSuccess(response) {
+      this.$emit('closeUpdateFormModal', false)
+      console.log(response)
+      const targetPost = {
+        body: response.data.body,
+        id: response.data.id,
+        user_id: response.data.user_id
+      }
+      this.$store.dispatch('updatePost', targetPost)
+      const message = '投稿内容を更新しました'
+      const color = 'bg-blue-500'
+      const timeout = 2000
+      this.$store.dispatch('getToast', { message, color, timeout })
     }
   },
   watch: {

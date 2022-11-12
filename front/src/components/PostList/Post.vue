@@ -40,6 +40,7 @@
   <UpdatePostForm 
   :showUpdateArea = postUpdateArea
   :updatePostContent = identifyPostUpdate
+  @closeUpdateFormModal = "postUpdateArea = $event" 
   />
 </div>
 </template>

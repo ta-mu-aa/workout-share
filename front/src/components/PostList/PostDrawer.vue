@@ -27,7 +27,6 @@ export default {
       }
     },
     postUpdate() {
-      console.log('showupdateArea')
       this.$emit('showPostUpdateArea', true)
     }
   }
