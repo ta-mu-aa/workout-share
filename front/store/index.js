@@ -44,9 +44,22 @@ export const store = createStore({
     setPostFormModal(state, payload) {
       state.postFormModal.isVisible = payload
     },
-  // 投稿一覧を取得
+  // 投稿に関するメソッド
     setPostList(state, payload) {
       state.postList = payload
+    },
+    deletePost(state, payload) {
+      const deletedPostArray = state.postList.filter(post => {
+        return post.id !== payload
+      })
+      state.postList = deletedPostArray
+    },
+    updatePost(state, payload) {
+      state.postList.map(post => {
+        if (post.id === payload.id) {
+          post.body = payload.body
+        }
+      })
     }
   },
   actions: {
@@ -75,9 +88,15 @@ export const store = createStore({
     getPostFormModal({ commit }, postModalPayload) {
       commit('setPostFormModal', postModalPayload)
     },
-  // 投稿一覧を取得
+  // 投稿に関するメソッド
     getPostList({ commit }, postList) {
       commit('setPostList', postList)
+    },
+    deletePost({ commit }, selectedPost) {
+      commit('deletePost', selectedPost)
+    },
+    updatePost({ commit }, updatedPostContent) {
+      commit('updatePost', updatedPostContent)
     }
   },
   getters: {

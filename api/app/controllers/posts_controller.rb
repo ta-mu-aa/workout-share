@@ -29,8 +29,17 @@ class PostsController < ApplicationController
 
   def update
     update_post = Post.find(params[:id])
-    update_post.update(post_params)
-    render json: { message: "投稿内容の更新に成功しました", data: update_post }, status:201
+    if update_post.update(post_params)
+      render json: { message: '投稿内容の更新に成功しました', data: update_post }, status:201
+    else 
+      if update_post.errors["body"] === ["is too long (maximum is 400 characters)"]
+        render json: { message: '400字以内で入力してください', data: update_post.errors["body"] }, status:400
+      elsif update_post.errors["body"] === ["can't be blank"]
+        render json: { message: '文字を入力してください', data: update_post.errors["body"] }, status:400    
+      else 
+        render json: { message: '投稿が見つかりませんでした', data: update_post.errors["body"] }, status: 404
+      end
+    end
   end
 
   def destroy
