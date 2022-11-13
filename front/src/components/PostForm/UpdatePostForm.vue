@@ -40,7 +40,11 @@ export default {
         user_id: this.$store.getters.current_user.id
       })
         .then(response => this.postUpdateSuccess(response.data))
-        .catch(error => console.log(error))
+        .catch(error => {
+          const message = error.response.data.message || '投稿が見つかりませんでした'
+          this.$store.dispatch('getToast', { message })
+          console.log(error)
+        })
     },
     postUpdateSuccess(response) {
       this.$emit('closeUpdateFormModal', false)

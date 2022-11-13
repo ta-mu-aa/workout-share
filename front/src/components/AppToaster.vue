@@ -2,7 +2,7 @@
   <div
    v-if="setToaster"
    v-bind:class = this.toast.color
-   class=" rounded-md z-40 fixed top-9 right-0 left-0 mx-auto w-1/2"
+   class=" rounded-md z-50 fixed top-9 right-0 left-0 mx-auto w-1/2"
    >
     <div class="mx-auto max-w-7xl py-3 px-3 sm:px-6 lg:px-8">
       <div class="flex flex-wrap items-center justify-between">
