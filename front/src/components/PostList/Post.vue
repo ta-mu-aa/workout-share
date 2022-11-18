@@ -4,7 +4,7 @@
     <div class="relative flex flex-shrink-0 p-4 pb-0">
       <a href="#" class="flex-shrink-0 group block">
         <div class="flex items-center">
-          <PostUserinfo />
+          <PostUserinfo :postedUserName="post.user_name" />
         </div>
       </a>
       <div class="m-auto text-sm leading-5 ml-2 font-medium text-gray-400">
