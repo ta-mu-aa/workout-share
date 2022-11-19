@@ -4,13 +4,13 @@
     <div class="relative flex flex-shrink-0 p-4 pb-0">
       <a href="#" class="flex-shrink-0 group block">
         <div class="flex items-center">
-          <PostUserinfo />
+          <PostUserinfo :postedUserName="post.user_name" />
         </div>
       </a>
       <div class="m-auto text-sm leading-5 ml-2 font-medium text-gray-400">
         {{ postedTime(post.created_at)}}
       </div>
-      <svg @click="showPostDrawer(post.id); selectePostId(post.id)" class="post-drawer-icon w-8 h-8 p-1 my-auto cursor-pointer rounded-full duration-200 hover:bg-black hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <svg v-if="currentUser.id === post.user_id" @click="showPostDrawer(post.id); selectePostId(post.id)" class="post-drawer-icon w-8 h-8 p-1 my-auto cursor-pointer rounded-full duration-200 hover:bg-black hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
           d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z">
         </path>
@@ -64,7 +64,8 @@ export default {
       postDrawerBoolean: false,
       selectedPost: null,
       postUpdateArea: false,
-      identifyPostUpdate: null
+      identifyPostUpdate: null,
+      currentUser: this.$store.getters.current_user
     }
   },
   methods: {
