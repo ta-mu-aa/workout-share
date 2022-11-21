@@ -20,6 +20,9 @@ class User < ApplicationRecord
                       format: { with: VALID_PASSWORD_REGEX }
   validates :password_confirmation, presence: true
 
+  validates :user_discription,
+                      length: { maximum: 400}
+
   # リフレッシュトークンのJWT IDを記憶する
   def remember(jti)
     update_column(:refresh_jti, jti)
