@@ -12,33 +12,46 @@
         <div class="shadow sm:overflow-hidden sm:rounded-md">
           <div class="space-y-6 bg-white px-4 py-5 sm:p-6">
             <div class="grid grid-cols-6 gap-6">
-              <div class="col-span-6 sm:col-span-3 p-3 pb-2 border border-gray-300 border-solid rounded-md">
+              <div class="col-span-6 sm:col-span-3 p-2 border border-gray-300 border-solid rounded-md">
                 <label for="user-name" class="block text-sm font-medium text-gray-400">ユーザー名</label>
-                <input type="text" name="user-name" id="user-name" autocomplete="given-name"
+                <input type="text" v-model="currentUserInfo.name" name="user-name" id="user-name" autocomplete="given-name"
                   class="mt-1 block w-full rounded-md outline-none sm:text-base " />
               </div>
-              <div class="col-span-6 sm:col-span-4 p-3 pb-2 border border-gray-300 border-solid rounded-md">
+              <div class="col-span-6 sm:col-span-4 p-2 border border-gray-300 border-solid rounded-md">
                 <label for="email-address" class="block text-sm font-medium text-gray-400">メールアドレス</label>
-                <input type="text" name="email-address" id="email-address" autocomplete="email"
+                <input type="text" v-model="currentUserInfo.email" name="email-address" id="email-address" autocomplete="email"
                   class="mt-1 block w-full rounded-md outline-none sm:text-base border-none" />
               </div>
             </div>
             <div>
-              <button class="rounded-md border border-gray-300 bg-white py-2 px-3 text-sm font-medium leading-4 text-gray-600 hover:bg-gray-100 focus:outline-none ">
+              <button v-if="!changePasswordArea" @click="changePasswordArea = true" class="rounded-md border border-gray-300 bg-white py-2 px-3 text-sm font-medium leading-4 text-gray-600 hover:bg-gray-100 focus:outline-none ">
                 パスワードを変更
-                <input id="file-upload" name="file-upload" type="file" class="sr-only" />
               </button>
+              <div v-if="changePasswordArea" class="col-span-6 sm:col-span-4 p-3 pb-2 border border-gray-300 border-solid rounded-md">
+                <label for="password" class="block text-sm font-medium text-gray-400">新規パスワード</label>
+                <input type="password" v-model="currentUserInfo.password" 
+                  name="password" id="password" autocomplete="password" class="mt-1 block w-full rounded-md outline-none sm:text-base border-none" />
+                <label for="password_confirmation" class="block text-sm font-medium text-gray-400">新規パスワード確認</label>
+                <input type="password" v-model="currentUserInfo.password_confirmation"
+                  name="password_confirmation" id="password_confirmation" autocomplete="password_confirmation" class="mt-1 block w-full rounded-md outline-none sm:text-base border-none" />
+                <div class="text-right">    
+                  <button @click="changePasswordArea = false"
+                  class="inline-flex justify-center rounded-md border border-transparent bg-gray-300 py-2 px-3 text-xs font- text-white shadow-sm  focus:ring-offset-2">
+                  キャンセル
+                </button>
+              </div>
+              </div>
             </div>
-            <div class="p-3 pb-2 border border-gray-300 border-solid rounded-md">
-              <label for="about" class="block text-sm font-medium text-gray-400">About</label>
+            <div class="p-2 border border-gray-300 border-solid rounded-md">
+              <label for="about" class="block text-sm font-medium text-gray-400">自己紹介</label>
               <div class="mt-1">
-                <textarea id="about" name="about" rows="3" class="mt-1 block w-full rounded-md outline-none  sm:text-base resize-none text-base" />
+                <textarea v-model="currentUserInfo.user_discription" id="about" name="about" rows="3" class="mt-1 block w-full rounded-md outline-none  sm:text-base resize-none text-base" />
               </div>
             </div>
 
             <div>
               <div class="mt-1 flex items-center">
-                <span class="inline-block h-12 w-12 overflow-hidden rounded-full bg-gray-100">
+                <span class="inline-block h-16 w-16 overflow-hidden rounded-full bg-gray-100">
                   <svg class="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
                   </svg>
@@ -51,7 +64,10 @@
             </div>
           </div>
           <div class="bg-gray-50 px-5 py-3 text-right sm:px-6">
-            <button type="submit" class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">更新</button>
+            <button type="submit" @click="submitUpdateInfo"
+              class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+              更新
+            </button>
           </div>
         </div>
       </div>
@@ -65,27 +81,6 @@
   </div>
 </template>
 
-<!-- <template>
-  <div class="flex justify-center h-full py-14">
-    <div class="container lg: py-14">
-      <form class="w-full max-w-sm m-auto">
-        <UserFormEmail v-model:user-email="userEmail" />
-        <UserFormPassword v-model:user-password="userPassword" />
-        <div class="md:flex md:items-center">
-          <div class="md:w-1/3"></div>
-          <div class="md:w-2/3">
-            <button @click="Login"
-              class="shadow bg-blue-500 hover:bg-blue-400 duration-200 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded"
-              type="button">
-              更新
-            </button>
-          </div>
-        </div>
-      </form>
-    </div>
-  </div>
-</template> -->
-
 <script>
 import UserFormEmail from '../UsreForm/UserFormEmail.vue'
 import UserFormPassword from '../UsreForm/UserFormPassword.vue'
@@ -93,8 +88,46 @@ export default {
   components: {
     UserFormEmail,
     UserFormPassword,
+  },
+  data() {
+    return {
+      currentUserInfo: {
+        id: '',
+        name: '',
+        email: '',
+        password: '',
+        password_confirmation: '',
+        user_discription: ''
+      },
+      changePasswordArea: false
+    }
+  },
+  methods: {
+    async submitUpdateInfo() {
+      const update_params = {
+        name: this.currentUserInfo.name,
+        email: this.currentUserInfo.email,
+        password: this.currentUserInfo.password,
+        password_confirmation: this.currentUserInfo.password_confirmation,
+        user_discription: this.currentUserInfo.user_discription
+      }
+    // パスワードの変更がなかった際はパラメータから削除
+      if (update_params.password === '' || update_params.password_confirmation === '') {
+        delete update_params.password
+        delete update_params.password_confirmation
+      }
+      console.log(update_params)
+      await this.axios.patch(`user/${this.currentUserInfo.id}`, update_params)
+      .then( response => console.log(response))
+      .catch( error => console.log(error))
+    },
+  },
+  created() {
+    const gettersCurrentUser = this.$store.getters.current_user
+    // あらかじめユーザー情報をフォームに出力
+    this.currentUserInfo.id = gettersCurrentUser.id; this.currentUserInfo.name = gettersCurrentUser.name; this.currentUserInfo.email = gettersCurrentUser.email
+    gettersCurrentUser.user_discription ? this.currentUserInfo.user_discription = gettersCurrentUser.user_discription : this.currentUserInfo.user_discription = ''
   }
-  
 }
 </script>
 
