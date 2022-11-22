@@ -53,7 +53,7 @@ class UserController < ApplicationController
     if updated_user.errors[:email] === ["has already been taken"]
       render json: { message: '既に登録さているメールアドレスです', data: user.errors[:email] }, status: 409
     else
-      render json: { mesage: '正確な情報を入力してください', data: updated_user.errors }, status: 400
+      render json: { message: '正確な情報を入力してください', data: updated_user.errors }, status: 400
     end
   end
 end

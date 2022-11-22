@@ -34,7 +34,7 @@ class User < ApplicationRecord
   end
 
   def response_json(payload = {})
-    as_json(only: [:id, :name, :email]).merge(payload).with_indifferent_access
+    as_json(only: [:id, :name, :email, :user_discription]).merge(payload).with_indifferent_access
   end
   
   private

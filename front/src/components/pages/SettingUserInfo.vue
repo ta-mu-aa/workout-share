@@ -118,8 +118,16 @@ export default {
       }
       console.log(update_params)
       await this.axios.patch(`user/${this.currentUserInfo.id}`, update_params)
-      .then( response => console.log(response))
-      .catch( error => console.log(error))
+        .then(() => {
+          this.$router.push('/home')
+          const message = 'ユーザー情報を更新しました'; const color = 'bg-blue-500';
+          this.$store.dispatch('getToast', { message, color })
+      })
+        .catch(error => {
+          const message = error.response.data.message
+          console.log(error.response.data)
+          this.$store.dispatch('getToast', { message })
+      })
     },
   },
   created() {
