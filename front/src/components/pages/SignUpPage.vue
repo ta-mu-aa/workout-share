@@ -86,11 +86,11 @@ export default  {
 
   updated() {
     // フォームに入力された値のバリデーション
-    if (this.userName === '' && this.userName.length > 30) {
+    if (this.userName === '' || this.userName.length > 30) {
       this.disabled = true
       return
     }
-    if (this.userEmail === '' && this.userEmail.length > 100) {
+    if (this.userEmail === '' || this.userEmail.length > 100) {
       this.disabled = true
       return
     }
@@ -99,7 +99,7 @@ export default  {
       this.disabled = true
       return
     }
-    if (this.userPassword === '' && this.userPassword.length < 8) {
+    if (this.userPassword === '' || this.userPassword.length < 8) {
       this.disabled = true
       return
     }

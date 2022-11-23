@@ -15,10 +15,13 @@ class User < ApplicationRecord
                       format: { with: VALID_EMAIL_REGEX }
 
   VALID_PASSWORD_REGEX = /\A[\w\-]+\z/
-  validates :password, confirmation: true, presence: true,
+  validates :password, confirmation: true, presence: true, on: :password,
                       length: { minimum: 8, maximum: 100 },
                       format: { with: VALID_PASSWORD_REGEX }
-  validates :password_confirmation, presence: true
+  validates :password_confirmation, presence: true, on: :password_confirmation
+
+  validates :user_discription,
+                      length: { maximum: 400}
 
   # リフレッシュトークンのJWT IDを記憶する
   def remember(jti)
@@ -31,7 +34,7 @@ class User < ApplicationRecord
   end
 
   def response_json(payload = {})
-    as_json(only: [:id, :name, :email]).merge(payload).with_indifferent_access
+    as_json(only: [:id, :name, :email, :user_discription]).merge(payload).with_indifferent_access
   end
   
   private

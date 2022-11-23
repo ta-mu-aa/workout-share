@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import HomePage from "../components/pages/HomePage.vue";
 import LoginPage from "../components/pages/LoginPage.vue";
 import SignUpPage from "../components/pages/SignUpPage.vue";
+import SettingUserInfo from "../components/pages/SettingUserInfo.vue";
 import NotFoundError from '../components/pages/error/NotFound.vue';
 import InternalServerError from '../components/pages/error/InternalServerError.vue';
 import silent_refresh  from '../../plugins/silent-refresh-token.js'
@@ -24,6 +25,11 @@ const routes = [
     path: "/login",
     name: "Login",
     component: LoginPage,
+  },
+  {
+    path: "/setting/:id/",
+    name: "UserSetting",
+    component: SettingUserInfo
   },
   {
     path: '/error',
