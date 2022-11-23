@@ -14,12 +14,12 @@
             <div class="grid grid-cols-6 gap-6">
               <div class="col-span-6 sm:col-span-3 p-2 border border-gray-300 border-solid rounded-md">
                 <label for="user-name" class="block text-sm font-medium text-gray-400">ユーザー名</label>
-                <input type="text" v-model="currentUserInfo.name" name="user-name" id="user-name" autocomplete="given-name"
+                <input type="text" v-model="currentUserInfo.name" name="user-name" id="user-name" autocomplete="off"
                   class="mt-1 block w-full rounded-md outline-none sm:text-base " />
               </div>
               <div class="col-span-6 sm:col-span-4 p-2 border border-gray-300 border-solid rounded-md">
                 <label for="email-address" class="block text-sm font-medium text-gray-400">メールアドレス</label>
-                <input type="text" v-model="currentUserInfo.email" name="email-address" id="email-address" autocomplete="email"
+                <input type="text" v-model="currentUserInfo.email" name="email-address" id="email-address" autocomplete="off"
                   class="mt-1 block w-full rounded-md outline-none sm:text-base border-none" />
               </div>
             </div>
@@ -30,10 +30,10 @@
               <div v-if="changePasswordArea" class="col-span-6 sm:col-span-4 p-3 pb-2 border border-gray-300 border-solid rounded-md">
                 <label for="password" class="block text-sm font-medium text-gray-400">新規パスワード</label>
                 <input type="password" v-model="currentUserInfo.password" 
-                  name="password" id="password" autocomplete="password" class="mt-1 block w-full rounded-md outline-none sm:text-base border-none" />
+                  name="password" id="password" autocomplete="off" class="mt-1 block w-full rounded-md outline-none sm:text-base border-none" />
                 <label for="password_confirmation" class="block text-sm font-medium text-gray-400">新規パスワード確認</label>
                 <input type="password" v-model="currentUserInfo.password_confirmation"
-                  name="password_confirmation" id="password_confirmation" autocomplete="password_confirmation" class="mt-1 block w-full rounded-md outline-none sm:text-base border-none" />
+                  name="password_confirmation" id="password_confirmation" autocomplete="off" class="mt-1 block w-full rounded-md outline-none sm:text-base border-none" />
                 <div class="text-right">    
                   <button @click="changePasswordArea = false"
                   class="inline-flex justify-center rounded-md border border-transparent bg-gray-300 py-2 px-3 text-xs font- text-white shadow-sm  focus:ring-offset-2">
@@ -64,8 +64,9 @@
             </div>
           </div>
           <div class="bg-gray-50 px-5 py-3 text-right sm:px-6">
-            <button type="submit" @click="submitUpdateInfo"
-              class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+            <button type="submit" @click="submitUpdateInfo" :disabled="submitButtonDisabled" 
+              :class="{ 'bg-indigo-300': submitButtonDisabled === true, 'bg-indigo-600': submitButtonDisabled === false, 'hover:bg-indigo-700': submitButtonDisabled === false}"
+              class="inline-flex justify-center rounded-md border border-transparent  py-2 px-4 text-sm font-medium text-white shadow-sm  focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
               更新
             </button>
           </div>
@@ -99,7 +100,8 @@ export default {
         password_confirmation: '',
         user_discription: ''
       },
-      changePasswordArea: false
+      changePasswordArea: false,
+      submitButtonDisabled: false
     }
   },
   methods: {
@@ -116,7 +118,6 @@ export default {
         delete update_params.password
         delete update_params.password_confirmation
       }
-      console.log(update_params)
       await this.axios.patch(`user/${this.currentUserInfo.id}`, update_params)
         .then(() => {
           this.$router.push('/home')
@@ -125,7 +126,6 @@ export default {
       })
         .catch(error => {
           const message = error.response.data.message
-          console.log(error.response.data)
           this.$store.dispatch('getToast', { message })
       })
     },
@@ -135,7 +135,47 @@ export default {
     // あらかじめユーザー情報をフォームに出力
     this.currentUserInfo.id = gettersCurrentUser.id; this.currentUserInfo.name = gettersCurrentUser.name; this.currentUserInfo.email = gettersCurrentUser.email
     gettersCurrentUser.user_discription ? this.currentUserInfo.user_discription = gettersCurrentUser.user_discription : this.currentUserInfo.user_discription = ''
+  },
+  updated() {
+    // フォームに入力された値のバリデーション
+    if (this.currentUserInfo.name === '' || this.currentUserInfo.name.length > 30) {
+      this.submitButtonDisabled = true
+      return
+    }
+    if (this.currentUserInfo.email === '' || this.currentUserInfo.email.length > 100) {
+      this.submitButtonDisabled = true
+      return
+    }
+    const emailReg = new RegExp(/^[A-Za-z0-9]{1}[A-Za-z0-9_.-]*@{1}[A-Za-z0-9_.-]{1,}\.[A-Za-z0-9]{1,}$/)
+    if (!emailReg.test(this.currentUserInfo.email)) {
+      this.submitButtonDisabled = true
+      return
+    }
+    if (this.changePasswordArea) {
+      if (this.currentUserInfo.password === '' || this.currentUserInfo.password.length < 8) {
+        this.submitButtonDisabled = true
+        return
+    }
+    if (this.currentUserInfo.password.length > 100) {
+      this.submitButtonDisabled = true
+      return
+    }
+    const passwordReg = /^(?=.*?[a-z])(?=.*?\d)[a-z\d]{8,100}$/i
+    if (!passwordReg.test(this.currentUserInfo.password)) {
+      this.submitButtonDisabled = true
+      return
+    }
+    if (this.currentUserInfo.password !== this.currentUserInfo.password_confirmation) {
+      this.submitButtonDisabled = true
+      return
+    }
   }
+  if (this.currentUserInfo.user_discription.length > 400) {
+    this.submitButtonDisabled = true
+    return
+  }
+    this.submitButtonDisabled = false
+  },
 }
 </script>
 

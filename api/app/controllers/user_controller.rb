@@ -1,6 +1,6 @@
 class UserController < ApplicationController
   include UserSessionizeService
-  before_action :sessionize_user
+  before_action :sessionize_user,  except: :create
 
   def index
     render json: current_user.as_json(only: [:id, :name, :email, :created_at])
