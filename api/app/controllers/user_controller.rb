@@ -1,9 +1,11 @@
 class UserController < ApplicationController
   include UserSessionizeService
+  require 'base64'
   before_action :sessionize_user,  except: :create
 
   def index
-    render json: current_user.as_json(only: [:id, :name, :email, :created_at])
+    users = User.all
+    render json: users, methods: [:image_url]
   end
 
   def create
@@ -20,16 +22,19 @@ class UserController < ApplicationController
   end
 
   def update
-    updated_user = User.find_by(id: user_update_params[:id])
+    updated_user = User.find(user_update_params[:id])
     if !user_update_params[:password] # パスワードの更新をしない場合
-      updated_user.name, updated_user.email, updated_user.user_discription = user_update_params[:name], user_update_params[:email], user_update_params[:user_discription]
-      if updated_user.save(context: :no_update_password) # バリデーションをかけない
+      updated_user.parse_base64(updated_user, user_update_params[:image_icon]) if user_update_params[:image_icon]
+      updated_user.name, updated_user.email, updated_user.user_discription = user_update_params[:name], user_update_params[:email], user_update_params[:user_discription], 
+      if updated_user.save(context: :no_update_password) # パスワードのカラムにバリデーションをかけない
         render status: 204
       else
         render_updated_errors(updated_user)
       end
     else
-      if updated_user.update(user_update_params)
+      updated_user.parse_base64(updated_user, user_update_params[:image_icon]) if user_update_params[:image_icon]
+      user_update_params_remove_image = {name:user_update_params[:name], email:user_update_params[:email], password:user_update_params[:password], user_discription:user_update_params[:user_discription]}
+      if updated_user.update(user_update_params_remove_image)
         render status: 204
       else
         render_updated_errors(updated_user)
@@ -46,7 +51,7 @@ class UserController < ApplicationController
   end
 
   def user_update_params
-    params.permit(:id, :user, :name, :email, :password, :password_confirmation, :user_discription)
+    params.permit(:id, :name, :email, :password, :password_confirmation, :user_discription, :image_icon)
   end
 
   def render_updated_errors(updated_user)
