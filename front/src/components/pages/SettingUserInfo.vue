@@ -144,16 +144,19 @@ export default {
       }
       await this.axios.patch(`user/${this.currentUserInfo.id}`, update_params)
         .then((response) => {
-          this.$store.dispatch('getCurrentUser', response.data)
-          this.$router.push('/home')
-          const message = 'ユーザー情報を更新しました'; const color = 'bg-blue-500';
-          this.$store.dispatch('getToast', { message, color })
+          this.user_update_success(response.data) 
       })
         .catch(error => {
           const message = error.response.data.message
           this.$store.dispatch('getToast', { message })
       })
     },
+    async user_update_success(response) {
+      await this.$store.dispatch('getCurrentUser', response)
+      await this.$router.push('/home')
+      const message = 'ユーザー情報を更新しました'; const color = 'bg-blue-500';
+      this.$store.dispatch('getToast', { message, color })
+    }
   },
   created() {
     const gettersCurrentUser = this.$store.getters.current_user
