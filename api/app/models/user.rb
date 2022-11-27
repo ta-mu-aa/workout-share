@@ -37,7 +37,7 @@ class User < ApplicationRecord
   end
 
   def response_json(payload = {})
-    as_json(only: [:id, :name, :email, :user_discription]).merge(payload).with_indifferent_access
+    as_json(only: [:id, :name, :email, :user_discription], methods: :image_url).merge(payload).with_indifferent_access
   end
 
   # 紐づいている画像のURLを取得する
@@ -77,11 +77,6 @@ class User < ApplicationRecord
     end
 
     def attach_image(updated_user,filename)
-      p "========="
-      p image_icon
-      p "model========="
-      p updated_user.image_icon
-      p "model========="
       updated_user.image_icon.attach(io: File.open("#{Rails.root}/tmp/#{filename}"), filename: filename)
       FileUtils.rm("#{Rails.root}/tmp/#{filename}")
     end

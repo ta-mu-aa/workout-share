@@ -51,7 +51,10 @@
 
             <div>
               <div class="mt-1 flex items-center">
-                <span class="inline-block h-16 w-16 overflow-hidden rounded-full bg-gray-100">
+                <span v-if="this.$store.getters.current_user.image_url" class="inline-block h-16 w-16 overflow-hidden rounded-full">
+                  <img :src=this.$store.getters.current_user.image_url alt="" >
+                </span>
+                <span v-if="!this.$store.getters.current_user.image_url" class="inline-block h-16 w-16 overflow-hidden rounded-full bg-gray-100">
                   <svg class="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
                   </svg>
@@ -140,7 +143,8 @@ export default {
         delete update_params.password_confirmation
       }
       await this.axios.patch(`user/${this.currentUserInfo.id}`, update_params)
-        .then(() => {
+        .then((response) => {
+          this.$store.dispatch('getCurrentUser', response.data)
           this.$router.push('/home')
           const message = 'ユーザー情報を更新しました'; const color = 'bg-blue-500';
           this.$store.dispatch('getToast', { message, color })

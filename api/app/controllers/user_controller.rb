@@ -25,9 +25,9 @@ class UserController < ApplicationController
     updated_user = User.find(user_update_params[:id])
     if !user_update_params[:password] # パスワードの更新をしない場合
       updated_user.parse_base64(updated_user, user_update_params[:image_icon]) if user_update_params[:image_icon]
-      updated_user.name, updated_user.email, updated_user.user_discription = user_update_params[:name], user_update_params[:email], user_update_params[:user_discription], 
+      updated_user.name, updated_user.email, updated_user.user_discription = user_update_params[:name], user_update_params[:email], user_update_params[:user_discription]
       if updated_user.save(context: :no_update_password) # パスワードのカラムにバリデーションをかけない
-        render status: 204
+        render_updated_success_response(updated_user)
       else
         render_updated_errors(updated_user)
       end
@@ -35,7 +35,7 @@ class UserController < ApplicationController
       updated_user.parse_base64(updated_user, user_update_params[:image_icon]) if user_update_params[:image_icon]
       user_update_params_remove_image = {name:user_update_params[:name], email:user_update_params[:email], password:user_update_params[:password], user_discription:user_update_params[:user_discription]}
       if updated_user.update(user_update_params_remove_image)
-        render status: 204
+        render_updated_success_response(updated_user)
       else
         render_updated_errors(updated_user)
       end
@@ -52,6 +52,11 @@ class UserController < ApplicationController
 
   def user_update_params
     params.permit(:id, :name, :email, :password, :password_confirmation, :user_discription, :image_icon)
+  end
+
+  def render_updated_success_response(updated_user)
+    response_user_data = User.select("id", "name", "email", "user_discription").find(user_update_params[:id])
+    render json: response_user_data, methods: :image_url
   end
 
   def render_updated_errors(updated_user)
