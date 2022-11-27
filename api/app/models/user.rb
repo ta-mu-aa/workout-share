@@ -1,10 +1,13 @@
 class User < ApplicationRecord
   include TokenGenerateService   # Token生成モジュール
+  include Rails.application.routes.url_helpers 
  # アソシエーション
+  has_secure_password
   has_many :posts
+  has_one_attached :image_icon # Active Recordによる疑似カラム生成
+  attr_accessor :image
 
   before_create :set_uuid
-  has_secure_password
 
   validates :name, presence: true,      
                       length: { maximum: 30 }
@@ -34,7 +37,25 @@ class User < ApplicationRecord
   end
 
   def response_json(payload = {})
-    as_json(only: [:id, :name, :email, :user_discription]).merge(payload).with_indifferent_access
+    as_json(only: [:id, :name, :email, :user_discription], methods: :image_url).merge(payload).with_indifferent_access
+  end
+
+  # 紐づいている画像のURLを取得する
+  def image_url
+    image_icon.attached? ? url_for(image_icon) : nil
+  end
+
+  def parse_base64(updated_user,image)
+    if image.present? || rex_image(image) == ''
+      content_type = create_extension(image)
+      contents = image.sub %r/data:((image|application)\/.{3,}),/, ''
+      decoded_data = Base64.decode64(contents)
+      filename = Time.zone.now.to_s + '.' + content_type
+      File.open("#{Rails.root}/tmp/#{filename}", 'wb') do |f|
+        f.write(decoded_data)
+      end
+    end
+    attach_image(updated_user,filename)
   end
   
   private
@@ -44,5 +65,19 @@ class User < ApplicationRecord
         # ランダムな20文字をidに設定
         self.id = SecureRandom.alphanumeric(20)
       end
+    end
+
+    def create_extension(image)
+      content_type = rex_image(image)
+      content_type[%r/\b(?!.*\/).*/]
+    end
+
+    def rex_image(image)
+      image[%r/(image\/[a-z]{3,4})|(application\/[a-z]{3,4})/]
+    end
+
+    def attach_image(updated_user,filename)
+      updated_user.image_icon.attach(io: File.open("#{Rails.root}/tmp/#{filename}"), filename: filename)
+      FileUtils.rm("#{Rails.root}/tmp/#{filename}")
     end
 end

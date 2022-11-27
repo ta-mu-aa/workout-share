@@ -20,10 +20,10 @@ class PostsController < ApplicationController
   def index
     post_all = Post.all
     add_username_post_all = post_all.map do |post| 
-      posted_user_name = User.find_by(id: post[:user_id]).name
+      posted_user = User.find_by(id: post[:user_id])
       { 
         "id" => post.id, "body" => post.body, "created_at" => post.created_at, "updated_at" => post.updated_at, 
-        "user_id" => post.user_id, "user_name" => posted_user_name
+        "user_id" => post.user_id, "user_name" => posted_user.name, "image_icon" => posted_user.image_url
       }
     end
     render json: add_username_post_all

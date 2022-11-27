@@ -51,15 +51,22 @@
 
             <div>
               <div class="mt-1 flex items-center">
-                <span class="inline-block h-16 w-16 overflow-hidden rounded-full bg-gray-100">
+                <span v-if="this.$store.getters.current_user.image_url" class="inline-block h-16 w-16 overflow-hidden rounded-full">
+                  <img :src=this.$store.getters.current_user.image_url alt="" >
+                </span>
+                <span v-if="!this.$store.getters.current_user.image_url" class="inline-block h-16 w-16 overflow-hidden rounded-full bg-gray-100">
                   <svg class="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
                   </svg>
                 </span>
                 <label for="file-upload" class="ml-5 rounded-md border border-gray-300 bg-white py-2 px-3 text-sm font-medium leading-4 text-gray-700 shadow-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
                   画像を変更
-                  <input id="file-upload" name="file-upload" type="file" class="sr-only" />
+                  <input @change="setImageIcon" id="file-upload" name="file-upload" type="file" class="sr-only" />
                 </label>
+                <div v-if="previewImageIcon" class="flex items-center">
+                  <span class="ml-2">{{ previewImageIcon.name }}</span>
+                  <img :src="currentUserInfo.ImageIconBase64" alt="" class=" h-16 w-16 ml-4">
+                </div>
               </div>
             </div>
           </div>
@@ -98,20 +105,37 @@ export default {
         email: '',
         password: '',
         password_confirmation: '',
-        user_discription: ''
+        user_discription: '',
+        ImageIconBase64: null
       },
       changePasswordArea: false,
-      submitButtonDisabled: false
+      submitButtonDisabled: false,
+      previewImageIcon: null
     }
   },
   methods: {
+    setImageIcon(e) {
+      e.preventDefault()
+      this.previewImageIcon = e.target.files[0]
+      const reader = new FileReader()
+      if (this.previewImageIcon) {
+        reader.readAsDataURL(this.previewImageIcon)
+      } else {
+        this.currentUserInfo.ImageIconBase64 = ''
+      }
+      // 変換が終わったら実行される
+      reader.onload = () => {
+        this.currentUserInfo.ImageIconBase64 = reader.result
+      }
+    },
     async submitUpdateInfo() {
       const update_params = {
         name: this.currentUserInfo.name,
         email: this.currentUserInfo.email,
         password: this.currentUserInfo.password,
         password_confirmation: this.currentUserInfo.password_confirmation,
-        user_discription: this.currentUserInfo.user_discription
+        user_discription: this.currentUserInfo.user_discription,
+        image_icon: this.currentUserInfo.ImageIconBase64
       }
     // パスワードの変更がなかった際はパラメータから削除
       if (update_params.password === '' || update_params.password_confirmation === '') {
@@ -119,16 +143,20 @@ export default {
         delete update_params.password_confirmation
       }
       await this.axios.patch(`user/${this.currentUserInfo.id}`, update_params)
-        .then(() => {
-          this.$router.push('/home')
-          const message = 'ユーザー情報を更新しました'; const color = 'bg-blue-500';
-          this.$store.dispatch('getToast', { message, color })
+        .then((response) => {
+          this.user_update_success(response.data) 
       })
         .catch(error => {
           const message = error.response.data.message
           this.$store.dispatch('getToast', { message })
       })
     },
+    async user_update_success(response) {
+      await this.$store.dispatch('getCurrentUser', response)
+      await this.$router.push('/home')
+      const message = 'ユーザー情報を更新しました'; const color = 'bg-blue-500';
+      this.$store.dispatch('getToast', { message, color })
+    }
   },
   created() {
     const gettersCurrentUser = this.$store.getters.current_user

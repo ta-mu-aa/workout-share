@@ -2,9 +2,15 @@
   <div ref="wrapper" class="relative settingDrawer_wrapper">
     <a href="#" class="flex-shrink-0 group block" @click="showDrower">
       <div class="flex items-center group-hover:opacity-60 duration-200">
-        <div>
-          <img class="inline-block  md:h-10 md:w-10 h-9 w-9  rounded-full"
-            src="https://pbs.twimg.com/profile_images/1121328878142853120/e-rpjoJi_bigger.png" alt="" />
+        <div class="flex align-middle">
+          <span v-if="currentUserInfo.image_url" class=" h-10 w-10 inline-block md:w-12 md:h-12 overflow-hidden rounded-full">
+            <img :src="currentUserInfo.image_url" alt="" />
+          </span>
+          <span v-if="!currentUserInfo.image_url" class=" h-10 w-10 inline-block md:w-12 md:h-12 overflow-hidden rounded-full bg-gray-100">
+            <svg class="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+          </span>
         </div>
         <div class="ml-3 hidden md:block">
           <p class="text-sm leading-6 font-medium">
