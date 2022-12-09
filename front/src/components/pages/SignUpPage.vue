@@ -34,6 +34,7 @@ import UserFormName from '../UsreForm/UserFormName.vue'
 import UserFormEmail from '../UsreForm/UserFormEmail.vue'
 import UserFormPassword from '../UsreForm/UserFormPassword.vue'
 import UserFormConfirm from '../UsreForm/UserFormConfirm.vue'
+import { authLoginMethods } from '../../../mixins/auth.js'
 const API_URL = import.meta.env.VITE_API_URL
 export default  {
   components: {
@@ -42,6 +43,7 @@ export default  {
     UserFormPassword,
     UserFormConfirm
   },
+  mixins: [authLoginMethods],
   data() {
     return {
       disabled: true,
@@ -52,30 +54,37 @@ export default  {
     }
   },
   methods: {
-  // 新規登録時のデータをAPIに送信する
+    // 新規登録時のデータをAPIに送信する
     async registerDataSubmit() {
-      try {
-          const postUserInfo = await this.axios.post(`${API_URL}/user/`, {
-          name: this.userName,
-          email: this.userEmail,
-          password: this.userPassword,
-          password_confirmation: this.userConfirm
-        })
-        const createUserResponse = postUserInfo.data  
-        console.log(createUserResponse)
+      const signupParams = {
+        name: this.userName,
+        email: this.userEmail,
+        password: this.userPassword,
+        password_confirmation: this.userConfirm
       }
-      catch (error) {
-        const responseStatusCode = error.response.status
-        if (responseStatusCode === 400) {
-          const message = '正しい情報を入力してください'
-          this.$store.dispatch('getToast', {message})
-          return
-        }
-        if (responseStatusCode === 409) {
-          const message = '既に登録済みのメールアドレスです'
-          this.$store.dispatch('getToast', { message })
-          return
-        }
+      await this.axios.post(`${API_URL}/user/`, signupParams)
+        .then(() => this.createUserSuccessfull())
+        .catch((error) => this.createUserFailer(error))
+    },
+    async createUserSuccessfull() {
+      const message = '新規登録を完了しました'; const color = 'bg-blue-500'
+      this.$store.dispatch('getToast', { message, color })
+      const loginParams = { auth: { email: this.userEmail, password: this.userPassword } }
+      await this.axios.post(`/auth_token`, loginParams)
+        .then(response => this.authSuccessful(response))
+        .catch(error => this.authFailure(error))
+    },
+    createUserFailer(error) {
+      const responseStatusCode = error.response.status
+      if (responseStatusCode === 400) {
+        const message = '正しい情報を入力してください'
+        this.$store.dispatch('getToast', { message })
+        return
+      }
+      if (responseStatusCode === 409) {
+        const message = '既に登録済みのメールアドレスです'
+        this.$store.dispatch('getToast', { message })
+        return
       }
     },
   // 新規会員登録ボタンを押した時の処理

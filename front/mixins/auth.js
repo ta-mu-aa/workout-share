@@ -58,6 +58,16 @@ export const authLoginMethods = {
   // ユーザーが存在し、かつ有効期限内の場合にtrueを返す
     loggedIn () {
       return this.isExistUser() && this.isAuthenticated()
-    }
-	}
+    },
+    authSuccessful(response) {
+      this.login(response)
+      this.$router.push('/home')
+    },
+    authFailure(error) {
+      if (error.response.status === 404) {
+        const message = 'ユーザーが見つかりません'
+        this.$store.dispatch('getToast', { message })
+      }
+    },
+  },
 }
