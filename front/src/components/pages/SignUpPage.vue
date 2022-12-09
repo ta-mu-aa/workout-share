@@ -74,17 +74,6 @@ export default  {
         .then(response => this.authSuccessful(response))
         .catch(error => this.authFailure(error))
     },
-    authSuccessful(response) {
-      // mixinsで記述しているメソッドを呼び出す 
-      this.login(response)
-      this.$router.push('/home')
-    },
-    authFailure(error) {
-      if (error && error.response.status === 404) {
-        const message = 'ユーザーが見つかりません'
-        this.$store.dispatch('getToast', { message })
-      }
-    },
     createUserFailer(error) {
       const responseStatusCode = error.response.status
       if (responseStatusCode === 400) {

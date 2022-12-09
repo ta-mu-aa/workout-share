@@ -53,17 +53,6 @@ export default {
       const postUserInfo = await this.axios.post(`/auth_token`, loginParams)
       .then(response => this.authSuccessful(response.data))
       .catch(error => this.authFailure(error))
-    },
-    authSuccessful(response) {
-    // mixinsで記述しているメソッドを呼び出す 
-      this.login(response)
-      this.$router.push('/home')
-    },
-    authFailure(error) {
-      if (error && error.response.status === 404) {
-        const message = 'ユーザーが見つかりません'
-        this.$store.dispatch('getToast', {message})
-      }
     }
   }
 }
