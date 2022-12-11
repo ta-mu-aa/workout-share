@@ -3,7 +3,12 @@ Rails.application.routes.draw do
   get 'posts/index'
   get 'posts/show'
   get 'posts/create'
-  resources :user
+  resources :user, only:[:create, :index, :show, :edit, :update] do 
+    member do
+      get :follows, :followers
+    end
+    resource :relationships, only: [:create, :destroy]
+  end
 
   resources :posts  
 
