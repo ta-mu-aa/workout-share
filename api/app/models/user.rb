@@ -2,8 +2,12 @@ class User < ApplicationRecord
   include TokenGenerateService   # Token生成モジュール
   include Rails.application.routes.url_helpers 
  # アソシエーション
-  has_secure_password
   has_many :posts
+  has_many :follower, class_name: "Relationship", foreign_key: "follower_id", dependent: :destroy
+  has_many :followed, class_name: "Relationship", foreign_key: "follower_id", dependent: :destroy
+  has_many :following_user, through: :follower, source: :followed # 自分がフォローしている人
+  has_many :follower_user, through: :followed, source: :follower # 自分をフォローしている人
+  has_secure_password
   has_one_attached :image_icon # Active Recordによる疑似カラム生成
   attr_accessor :image
 
