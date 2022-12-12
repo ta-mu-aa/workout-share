@@ -45,6 +45,13 @@ class UserController < ApplicationController
   def delete
   end
 
+  def relationship_list
+    user = User.find(params[:id])
+    following_users = user.following_user.pluck(:id, :name)
+    follower_users = user.follower_user.pluck(:id, :name)
+    render json: { following: following_users, follower: follower_users}
+  end
+
   private 
   def user_params
     params.permit(:name, :email, :password, :password_confirmation)
