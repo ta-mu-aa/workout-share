@@ -45,6 +45,13 @@ class UserController < ApplicationController
   def delete
   end
 
+  def relationship_list
+    user = User.find(params[:id])
+    following_user = relationship_list_select_column(user.following_user)
+    followerd_user = relationship_list_select_column(user.follower_user)
+    render json: {following: following_user, follower: followerd_user}
+  end
+
   private 
   def user_params
     params.permit(:name, :email, :password, :password_confirmation)
@@ -64,6 +71,12 @@ class UserController < ApplicationController
       render json: { message: '既に登録さているメールアドレスです', data: user.errors[:email] }, status: 409
     else
       render json: { message: '正確な情報を入力してください', data: updated_user.errors }, status: 400
+    end
+  end
+
+  def relationship_list_select_column(relation_user)
+    relation_user.map do |user|
+      {id: user.id, name: user.name, discription:user.user_discription, icon: user.image_url}
     end
   end
 end
