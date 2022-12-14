@@ -20,6 +20,7 @@
       </div>
     </a>
     <div class="absolute top-11 -left-5 min-w-max p-5 shadow-lg text-sm bg-white" v-if="settingDrower">
+      <router-link :to="{ path: `/${currentUserInfo.id}` }"><div class="mb-2 cursor-pointer">マイページ</div></router-link>
       <router-link :to="{ path: `/setting/${currentUserInfo.id}` }"><div class="mb-2 cursor-pointer">設定</div></router-link>
       <div class="cursor-pointer" @click="Logout">ログアウト</div>
     </div>
