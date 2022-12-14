@@ -1,0 +1,61 @@
+<template>
+  <div>
+    <div class="pt-12 pb-4 px-28">
+      <div class="flex justify-start border-b border-solid border-gray-300 px-6 pb-4">
+        <div class="px-14 py-6">
+          <svg class="w-28 h-28 overflow-hidden rounded-full bg-gray-100 text-gray-300" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+          <!-- <figure class="inline-block w-28 h-28 overflow-hidden rounded-full">
+            <img :src=$store.getters.current_user.image_url alt="">
+          </figure> -->
+        </div>
+        <div class="px-4 break-words">
+          <div class="w-full my-4 flex items-center">
+            <span class="font-semibold">あいうえおかきくけこ</span>
+            <div class="flex cursor-pointer">
+              <span class="ml-6 px-2 py-1 text-xs font-semibold rounded-md border border-solid border-gray-400">プロフィールを編集</span>
+              <svg class="w-6 h-6 text-gray-600 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
+                </path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+              </svg>
+            </div>
+            <!-- <span class="ml-6 px-6 py-2 cursor-pointer font-semibold rounded-full text-xs text-white bg-blue-400">フォロー</span> -->
+          </div>
+          <div class="flex mb-4">
+            <span class="mr-6 text-sm">フォロワー<span class="font-bold">10</span>人</span><span class="text-sm">フォロー中<span class="font-bold">10</span>人</span>
+          </div>
+          <span class="w-full">自己紹介です自己紹介です自己紹介です自己紹介です自己紹介です自己紹介です</span>
+        </div>
+      </div>
+    </div>
+    <div class="flex justify-center h-full pb-20 pt-4">
+      <div class="container">
+        <div class="flex justify-center">
+          <div class="w-3/5 border border-gray-600 h-auto  border-t-0">
+            <Post />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import Post from '../PostList/Post.vue'
+import post_list_fetch from '../../../plugins/post-list-fetch.js'
+export default {
+  components: {
+    Post
+  },
+  async created(){
+    await post_list_fetch()
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+
+</style>
