@@ -8,6 +8,11 @@ class UserController < ApplicationController
     render json: users, methods: [:image_url]
   end
 
+  def show
+    target_user = User.select("id","name","email","user_discription").find(params[:id])
+    render json: target_user, methods: [:image_url]
+  end
+
   def create
     user = User.new(user_params)
     if user.save

@@ -3,6 +3,7 @@ import HomePage from "../components/pages/HomePage.vue";
 import LoginPage from "../components/pages/LoginPage.vue";
 import SignUpPage from "../components/pages/SignUpPage.vue";
 import SettingUserInfo from "../components/pages/SettingUserInfo.vue";
+import UserPage from "../components/pages/UserPage.vue";
 import NotFoundError from '../components/pages/error/NotFound.vue';
 import InternalServerError from '../components/pages/error/InternalServerError.vue';
 import silent_refresh  from '../../plugins/silent-refresh-token.js'
@@ -30,6 +31,27 @@ const routes = [
     path: "/setting/:id/",
     name: "UserSetting",
     component: SettingUserInfo
+  },
+  {
+    path: "/:id/",
+    name: "UserPage",
+    component: UserPage,
+    beforeEnter: (to, from, next) => {
+      if (to.params.id === store.getters.current_user.id) {
+        next()
+        return
+      }
+      axios.get(`/user/${to.params.id}`)
+        .then(res => {
+          store.dispatch('getUserPageInfo', res.data)
+          next()
+        })
+        .catch(() => {
+          const message = 'ユーザーが見つかりません'
+          next({ path:'/home' })
+          store.dispatch('getToast', { message })
+        }) 
+    }
   },
   {
     path: '/error',

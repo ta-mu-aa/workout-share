@@ -5,6 +5,7 @@
       <a href="#" class="flex-shrink-0 group block">
         <div class="flex items-center">
           <PostUserinfo 
+          :postedUserId="post.user_id" 
           :postedUserName="post.user_name" 
           :postedUserIcon="post.image_icon"
           />

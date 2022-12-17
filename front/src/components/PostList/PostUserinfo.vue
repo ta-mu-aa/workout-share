@@ -1,5 +1,5 @@
 <template>
-  <a href="#" class="flex items-center group-hover:opacity-60 duration-200">
+  <router-link :to="{ path: `/${postedUserId}`}" class="flex items-center group-hover:opacity-60 duration-200">
     <div>
       <span v-if="postedUserIcon" class="h-10 w-10 inline-block overflow-hidden rounded-full">
         <img :src="postedUserIcon" alt="" />
@@ -15,12 +15,15 @@
         {{ postedUserName }}
       </span>
     </div>
-  </a>
+  </router-link>
 </template>
 
 <script>
 export default {
   props: {
+    postedUserId: {
+      type:String
+    },
     postedUserName: {
       type:String
     },
