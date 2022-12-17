@@ -7,7 +7,7 @@
             <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
           </svg>
           <figure v-if="userProfile.image_url" class="inline-block w-28 h-28 overflow-hidden rounded-full">
-            <img :src=userProfile.image_url alt="">
+            <img :src=userProfile.image_url>
           </figure>
         </div>
         <div class="px-4 break-words">
@@ -64,9 +64,7 @@ export default {
       this.userProfile = this.$store.getters.current_user
     }
     else {
-      this.axios.get(`/user/${user_id}`)
-        .then(res => this.userProfile = res.data)
-        .catch(error => this.$router.push) 
+      this.userProfile = this.$store.getters.userPage 
     }
     await post_list_fetch()
   }

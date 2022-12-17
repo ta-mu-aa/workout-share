@@ -19,7 +19,8 @@ export const store = createStore({
       postFormModal: {
         isVisible: false
       },
-      postList: []
+      postList: [],
+      userPage: {}
     }
   },
   mutations: {
@@ -60,6 +61,9 @@ export const store = createStore({
           post.body = payload.body
         }
       })
+    },
+    updateUserPageInfo(state, payload) {
+      state.userPage = payload
     }
   },
   actions: {
@@ -97,6 +101,9 @@ export const store = createStore({
     },
     updatePost({ commit }, updatedPostContent) {
       commit('updatePost', updatedPostContent)
+    },
+    getUserPageInfo({ commit }, userInfomation) {
+      commit('updateUserPageInfo', userInfomation)
     }
   },
   getters: {
@@ -127,6 +134,9 @@ export const store = createStore({
         return (a.created_at > b.created_at) ? -1 : 1;  //オブジェクト昇順ソート
       })
       return postListByDate
+    },
+    userPage(state) {
+      return state.userPage
     }
   }
 })
