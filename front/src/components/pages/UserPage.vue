@@ -25,7 +25,8 @@
             <span v-if="!currentUserFlag" class="ml-6 px-6 py-2 cursor-pointer font-semibold rounded-full text-xs text-white bg-blue-400">フォロー</span>
           </div>
           <div class="flex mb-4">
-            <span class="mr-6 text-sm">フォロワー<span class="font-bold">10</span>人</span><span class="text-sm">フォロー中<span class="font-bold">10</span>人</span>
+            <span class="mr-6 text-sm">フォロワー<span class="font-bold">{{ UserRelationshipsList.followingUser.length }}</span>人</span>
+            <span class="text-sm">フォロー中<span class="font-bold">{{ UserRelationshipsList.followerUser.length }}</span>人</span>
           </div>
           <span class="w-full">{{ userProfile.user_discription }}</span>
         </div>
@@ -53,12 +54,29 @@ export default {
   data() {
     return {
       currentUserFlag: false,
-      userProfile: {}
+      userProfile: {},
+      UserRelationshipsList: {
+        followingUser: [],
+        followerUser: []
+      }
+    }
+  },
+  methods: {
+    async fetchUserRelationships(user_id) {
+      this.axios.get(`/user/${user_id}/relationship_list`)
+        .then(res => {
+          this.$store.dispatch('getUserRelationshipsList', res.data)
+          this.UserRelationshipsList.followingUser = this.$store.getters.followingUser
+          this.UserRelationshipsList.followerUser = this.$store.getters.followerUser
+        })
+        .catch(error => console.log(error))
+     
     }
   },
   async created() {
     const curretUser = this.$store.getters.current_user
     let user_id = this.$route.params.id
+    this.fetchUserRelationships(user_id)
     user_id === curretUser.id ? this.currentUserFlag = true : this.currentUserFlag = false
     if (this.currentUserFlag) {
       this.userProfile = this.$store.getters.current_user
@@ -67,7 +85,7 @@ export default {
       this.userProfile = this.$store.getters.userPage 
     }
     await post_list_fetch()
-  }
+  },
 }
 </script>
 
