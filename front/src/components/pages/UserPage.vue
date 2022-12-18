@@ -1,6 +1,7 @@
 <template>
   <div>
-    <div class="pt-12 pb-4 px-28">
+    <HeaderBar />
+    <div class="pt-28 pb-4 px-28">
       <div class="flex justify-start border-b border-solid border-gray-300 px-6 pb-4">
         <div class="px-14 py-6">
           <svg v-if="!userProfile.image_url" class="w-28 h-28 overflow-hidden rounded-full bg-gray-100 text-gray-300" fill="currentColor" viewBox="0 0 24 24">
@@ -22,10 +23,16 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
               </svg>
             </router-link>
-            <span v-if="!currentUserFlag" class="ml-6 px-6 py-2 cursor-pointer font-semibold rounded-full text-xs text-white bg-blue-400">フォロー</span>
+            <span 
+              @click="following(userProfile.id)" v-if="(!currentUserFlag && !followingStatus)" 
+              class="ml-6 px-4 py-1 cursor-pointer font-semibold rounded-full text-xs border-2 border-solid border-blue-400 text-white bg-blue-400 cousor-pointer" >フォロー</span>
+            <span 
+              @click="unfollow(userProfile.id)" v-if="(!currentUserFlag && followingStatus)" 
+              class="ml-6 px-4 py-1 cursor-pointer font-semibold rounded-full text-xs border-2 border-solid border-blue-400 bg-white text-blue-400 cousor-pointer" >フォロー中</span>
           </div>
           <div class="flex mb-4">
-            <span class="mr-6 text-sm">フォロワー<span class="font-bold">10</span>人</span><span class="text-sm">フォロー中<span class="font-bold">10</span>人</span>
+            <span class="mr-6 text-sm">フォロワー<span class="font-bold">{{ UserRelationshipsList.followerUser.length }}</span>人</span>
+            <span class="text-sm">フォロー中<span class="font-bold">{{ UserRelationshipsList.followingUser.length }}</span>人</span>
           </div>
           <span class="w-full">{{ userProfile.user_discription }}</span>
         </div>
@@ -45,28 +52,86 @@
 
 <script>
 import Post from '../PostList/Post.vue'
+import HeaderBar from '../HeaderBar/HeaderBar.vue'
 import post_list_fetch from '../../../plugins/post-list-fetch.js'
+import user_relationship_fetch from '../../../plugins/user-relationship-fetch.js'
 export default {
   components: {
+    HeaderBar,
     Post
+  },
+  async beforeRouteEnter(to, from, next) {
+    await user_relationship_fetch(to)
+    next()
   },
   data() {
     return {
       currentUserFlag: false,
-      userProfile: {}
+      userProfile: {},
+      UserRelationshipsList: {
+        followingUser: [],
+        followerUser: []
+      },
+      followingStatus: false
+    }
+  },
+  methods: {
+    setUserRelationshipInfo() {
+      const curretUser = this.$store.getters.current_user
+      let user_id = this.$route.params.id
+      user_id === curretUser.id ? this.currentUserFlag = true : this.currentUserFlag = false
+      if (this.currentUserFlag) {
+        this.userProfile = this.$store.getters.current_user
+      }
+      else {
+        this.userProfile = this.$store.getters.userPage
+      }
+      this.UserRelationshipsList.followingUser = this.$store.getters.followingUser
+      this.UserRelationshipsList.followerUser = this.$store.getters.followerUser
+      this.UserRelationshipsList.followerUser.forEach(followerUser => {
+        if (followerUser.id === this.$store.getters.current_user.id) {
+          this.followingStatus = true
+        }
+      })
+    },
+    following(following_user_id) {  //フォローするメソッド
+      this.axios.post(`/user/${following_user_id}/relationships`)
+        .then(() => {
+          this.followingStatus = true
+          const currentUser = this.$store.getters.current_user
+          this.UserRelationshipsList.followerUser.push({ id: currentUser.id, name: currentUser.name, discription: currentUser.user_discription, icon: currentUser.image_url })
+        })
+        .catch(() => {
+          const message = 'フォローするユーザーが見つかりません'
+          this.$store.dispatch('getToast', { message })
+        })
+    },
+    unfollow(unfollowing_user_id) {  //フォロー解除するメソッド
+      if (window.confirm('フォローを解除しますか？')) {  
+        this.axios.delete(`/user/${unfollowing_user_id}/relationships`)
+        .then(() => {
+          this.followingStatus = false
+          this.UserRelationshipsList.followerUser =
+            this.UserRelationshipsList.followerUser.filter(unfollow_user => {
+            unfollow_user.id === this.$store.getters.current_user.id
+          })
+        })
+        .catch(() => {
+          const message = 'ユーザーが見つかりません'
+          this.$store.dispatch('getToast', { message })
+        })
+      }
     }
   },
   async created() {
-    const curretUser = this.$store.getters.current_user
-    let user_id = this.$route.params.id
-    user_id === curretUser.id ? this.currentUserFlag = true : this.currentUserFlag = false
-    if (this.currentUserFlag) {
-      this.userProfile = this.$store.getters.current_user
-    }
-    else {
-      this.userProfile = this.$store.getters.userPage 
-    }
+    this.setUserRelationshipInfo()
     await post_list_fetch()
+  },
+  watch: {
+    // URLパラメータの変更を検知して反映させる
+    $route(to, from) {
+      this.setUserRelationshipInfo()
+    }
   }
 }
 </script>

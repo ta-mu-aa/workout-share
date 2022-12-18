@@ -20,7 +20,8 @@ export const store = createStore({
         isVisible: false
       },
       postList: [],
-      userPage: {}
+      userPage: {},
+      UserRelationshipsList: {}
     }
   },
   mutations: {
@@ -62,8 +63,12 @@ export const store = createStore({
         }
       })
     },
+  // マイページ関連
     updateUserPageInfo(state, payload) {
       state.userPage = payload
+    },
+    setRelationshipsList(state, payload) {
+      state.UserRelationshipsList = payload
     }
   },
   actions: {
@@ -102,8 +107,12 @@ export const store = createStore({
     updatePost({ commit }, updatedPostContent) {
       commit('updatePost', updatedPostContent)
     },
+  // マイページ関連
     getUserPageInfo({ commit }, userInfomation) {
       commit('updateUserPageInfo', userInfomation)
+    },
+    getUserRelationshipsList({ commit }, RelationshipsList) {
+      commit('setRelationshipsList', RelationshipsList)
     }
   },
   getters: {
@@ -135,8 +144,15 @@ export const store = createStore({
       })
       return postListByDate
     },
+  // マイページ関連
     userPage(state) {
       return state.userPage
-    }
+    },
+    followingUser(state) {
+      return state.UserRelationshipsList.following
+    },
+    followerUser(state) {
+      return state.UserRelationshipsList.follower
+    },
   }
 })

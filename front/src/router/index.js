@@ -35,23 +35,7 @@ const routes = [
   {
     path: "/:id/",
     name: "UserPage",
-    component: UserPage,
-    beforeEnter: (to, from, next) => {
-      if (to.params.id === store.getters.current_user.id) {
-        next()
-        return
-      }
-      axios.get(`/user/${to.params.id}`)
-        .then(res => {
-          store.dispatch('getUserPageInfo', res.data)
-          next()
-        })
-        .catch(() => {
-          const message = 'ユーザーが見つかりません'
-          next({ path:'/home' })
-          store.dispatch('getToast', { message })
-        }) 
-    }
+    component: UserPage
   },
   {
     path: '/error',
