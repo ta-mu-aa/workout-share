@@ -26,7 +26,7 @@
               @click="following(userProfile.id)" v-if="(!currentUserFlag && !followingStatus)" 
               class="ml-6 px-4 py-1 cursor-pointer font-semibold rounded-full text-xs border-2 border-solid border-blue-400 text-white bg-blue-400 cousor-pointer" >フォロー</span>
             <span 
-              v-if="(!currentUserFlag && followingStatus)" 
+              @click="unfollow(userProfile.id)" v-if="(!currentUserFlag && followingStatus)" 
               class="ml-6 px-4 py-1 cursor-pointer font-semibold rounded-full text-xs border-2 border-solid border-blue-400 bg-white text-blue-400 cousor-pointer" >フォロー中</span>
           </div>
           <div class="flex mb-4">
@@ -70,13 +70,31 @@ export default {
   methods: {
     following(following_user_id) {
       this.axios.post(`/user/${following_user_id}/relationships`)
-        .then(res => {
-          console.log(res)
+        .then(() => {
+          this.followingStatus = true
+          const currentUser = this.$store.getters.current_user
+          this.UserRelationshipsList.followerUser.push({ id: currentUser.id, name: currentUser.name, discription: currentUser.user_discription, icon: currentUser.image_url })
         })
         .catch(() => {
           const message = 'フォローするユーザーが見つかりません'
-          this.$store.dispatch('getToaste', { message })
+          this.$store.dispatch('getToast', { message })
         })
+    },
+    unfollow(unfollowing_user_id) {
+      if (window.confirm('フォローを解除しますか？')) {  
+        this.axios.delete(`/user/${unfollowing_user_id}/relationships`)
+        .then(() => {
+          this.followingStatus = false
+          this.UserRelationshipsList.followerUser =
+            this.UserRelationshipsList.followerUser.filter(unfollow_user => {
+            unfollow_user.id === this.$store.getters.current_user.id
+          })
+        })
+        .catch(() => {
+          const message = 'ユーザーが見つかりません'
+          this.$store.dispatch('getToast', { message })
+        })
+      }
     }
   },
   async created() {
@@ -93,8 +111,8 @@ export default {
     this.$store.dispatch('getUserRelationshipsList', fetchUserRelationshipsList.data)
     this.UserRelationshipsList.followingUser = this.$store.getters.followingUser
     this.UserRelationshipsList.followerUser = this.$store.getters.followerUser
-    this.UserRelationshipsList.followingUser.forEach(followingUser => {
-      if (followingUser.id === this.userProfile.id) {
+    this.UserRelationshipsList.followerUser.forEach(followerUser => {
+      if (followerUser.id === this.$store.getters.current_user.id) {
         this.followingStatus = true
       }
     })
