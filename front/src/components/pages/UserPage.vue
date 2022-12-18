@@ -1,6 +1,7 @@
 <template>
   <div>
-    <div class="pt-12 pb-4 px-28">
+    <HeaderBar />
+    <div class="pt-28 pb-4 px-28">
       <div class="flex justify-start border-b border-solid border-gray-300 px-6 pb-4">
         <div class="px-14 py-6">
           <svg v-if="!userProfile.image_url" class="w-28 h-28 overflow-hidden rounded-full bg-gray-100 text-gray-300" fill="currentColor" viewBox="0 0 24 24">
@@ -51,10 +52,12 @@
 
 <script>
 import Post from '../PostList/Post.vue'
+import HeaderBar from '../HeaderBar/HeaderBar.vue'
 import post_list_fetch from '../../../plugins/post-list-fetch.js'
 import user_relationship_fetch from '../../../plugins/user-relationship-fetch.js'
 export default {
   components: {
+    HeaderBar,
     Post
   },
   async beforeRouteEnter(to, from, next) {
