@@ -22,11 +22,16 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
               </svg>
             </router-link>
-            <span v-if="!currentUserFlag" class="ml-6 px-6 py-2 cursor-pointer font-semibold rounded-full text-xs text-white bg-blue-400">フォロー</span>
+            <span 
+              @click="following(userProfile.id)" v-if="(!currentUserFlag && !followingStatus)" 
+              class="ml-6 px-4 py-1 cursor-pointer font-semibold rounded-full text-xs border-2 border-solid border-blue-400 text-white bg-blue-400 cousor-pointer" >フォロー</span>
+            <span 
+              v-if="(!currentUserFlag && followingStatus)" 
+              class="ml-6 px-4 py-1 cursor-pointer font-semibold rounded-full text-xs border-2 border-solid border-blue-400 bg-white text-blue-400 cousor-pointer" >フォロー中</span>
           </div>
           <div class="flex mb-4">
-            <span class="mr-6 text-sm">フォロワー<span class="font-bold">{{ UserRelationshipsList.followingUser.length }}</span>人</span>
-            <span class="text-sm">フォロー中<span class="font-bold">{{ UserRelationshipsList.followerUser.length }}</span>人</span>
+            <span class="mr-6 text-sm">フォロワー<span class="font-bold">{{ UserRelationshipsList.followerUser.length }}</span>人</span>
+            <span class="text-sm">フォロー中<span class="font-bold">{{ UserRelationshipsList.followingUser.length }}</span>人</span>
           </div>
           <span class="w-full">{{ userProfile.user_discription }}</span>
         </div>
@@ -58,25 +63,25 @@ export default {
       UserRelationshipsList: {
         followingUser: [],
         followerUser: []
-      }
+      },
+      followingStatus: false
     }
   },
   methods: {
-    async fetchUserRelationships(user_id) {
-      this.axios.get(`/user/${user_id}/relationship_list`)
+    following(following_user_id) {
+      this.axios.post(`/user/${following_user_id}/relationships`)
         .then(res => {
-          this.$store.dispatch('getUserRelationshipsList', res.data)
-          this.UserRelationshipsList.followingUser = this.$store.getters.followingUser
-          this.UserRelationshipsList.followerUser = this.$store.getters.followerUser
+          console.log(res)
         })
-        .catch(error => console.log(error))
-     
+        .catch(() => {
+          const message = 'フォローするユーザーが見つかりません'
+          this.$store.dispatch('getToaste', { message })
+        })
     }
   },
   async created() {
     const curretUser = this.$store.getters.current_user
     let user_id = this.$route.params.id
-    this.fetchUserRelationships(user_id)
     user_id === curretUser.id ? this.currentUserFlag = true : this.currentUserFlag = false
     if (this.currentUserFlag) {
       this.userProfile = this.$store.getters.current_user
@@ -84,6 +89,15 @@ export default {
     else {
       this.userProfile = this.$store.getters.userPage 
     }
+    const fetchUserRelationshipsList = await this.axios.get(`/user/${user_id}/relationship_list`)
+    this.$store.dispatch('getUserRelationshipsList', fetchUserRelationshipsList.data)
+    this.UserRelationshipsList.followingUser = this.$store.getters.followingUser
+    this.UserRelationshipsList.followerUser = this.$store.getters.followerUser
+    this.UserRelationshipsList.followingUser.forEach(followingUser => {
+      if (followingUser.id === this.userProfile.id) {
+        this.followingStatus = true
+      }
+    })
     await post_list_fetch()
   },
 }
