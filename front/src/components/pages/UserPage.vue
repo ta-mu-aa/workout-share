@@ -52,9 +52,14 @@
 <script>
 import Post from '../PostList/Post.vue'
 import post_list_fetch from '../../../plugins/post-list-fetch.js'
+import user_relationship_fetch from '../../../plugins/user-relationship-fetch.js'
 export default {
   components: {
     Post
+  },
+  async beforeRouteEnter(to, from, next) {
+    await user_relationship_fetch(to)
+    next()
   },
   data() {
     return {
@@ -68,7 +73,25 @@ export default {
     }
   },
   methods: {
-    following(following_user_id) {
+    setUserRelationshipInfo() {
+      const curretUser = this.$store.getters.current_user
+      let user_id = this.$route.params.id
+      user_id === curretUser.id ? this.currentUserFlag = true : this.currentUserFlag = false
+      if (this.currentUserFlag) {
+        this.userProfile = this.$store.getters.current_user
+      }
+      else {
+        this.userProfile = this.$store.getters.userPage
+      }
+      this.UserRelationshipsList.followingUser = this.$store.getters.followingUser
+      this.UserRelationshipsList.followerUser = this.$store.getters.followerUser
+      this.UserRelationshipsList.followerUser.forEach(followerUser => {
+        if (followerUser.id === this.$store.getters.current_user.id) {
+          this.followingStatus = true
+        }
+      })
+    },
+    following(following_user_id) {  //フォローするメソッド
       this.axios.post(`/user/${following_user_id}/relationships`)
         .then(() => {
           this.followingStatus = true
@@ -80,7 +103,7 @@ export default {
           this.$store.dispatch('getToast', { message })
         })
     },
-    unfollow(unfollowing_user_id) {
+    unfollow(unfollowing_user_id) {  //フォロー解除するメソッド
       if (window.confirm('フォローを解除しますか？')) {  
         this.axios.delete(`/user/${unfollowing_user_id}/relationships`)
         .then(() => {
@@ -98,26 +121,15 @@ export default {
     }
   },
   async created() {
-    const curretUser = this.$store.getters.current_user
-    let user_id = this.$route.params.id
-    user_id === curretUser.id ? this.currentUserFlag = true : this.currentUserFlag = false
-    if (this.currentUserFlag) {
-      this.userProfile = this.$store.getters.current_user
-    }
-    else {
-      this.userProfile = this.$store.getters.userPage 
-    }
-    const fetchUserRelationshipsList = await this.axios.get(`/user/${user_id}/relationship_list`)
-    this.$store.dispatch('getUserRelationshipsList', fetchUserRelationshipsList.data)
-    this.UserRelationshipsList.followingUser = this.$store.getters.followingUser
-    this.UserRelationshipsList.followerUser = this.$store.getters.followerUser
-    this.UserRelationshipsList.followerUser.forEach(followerUser => {
-      if (followerUser.id === this.$store.getters.current_user.id) {
-        this.followingStatus = true
-      }
-    })
+    this.setUserRelationshipInfo()
     await post_list_fetch()
   },
+  watch: {
+    // URLパラメータの変更を検知して反映させる
+    $route(to, from) {
+      this.setUserRelationshipInfo()
+    }
+  }
 }
 </script>
 
