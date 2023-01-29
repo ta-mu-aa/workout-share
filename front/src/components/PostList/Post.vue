@@ -1,5 +1,8 @@
 <template>
 <div>
+  <div v-if="isLoading" class="flex justify-center pt-8">
+    <Loading />
+  </div>
   <div v-for="post in showPostList" :key="post.id" :id=post.id>
     <div class="relative flex flex-shrink-0 p-4 pb-0">
       <a href="#" class="flex-shrink-0 group block">
@@ -55,16 +58,20 @@ import PostReply from './PostReply.vue'
 import PostFavorite from './PostFavorite.vue'
 import PostDrawer from './PostDrawer.vue'
 import UpdatePostForm from '../PostForm/UpdatePostForm.vue'
+import Loading from '../Loading.vue'
+import post_list_fetch from '../../../plugins/post-list-fetch.js'
 export default {
   components: {
     PostUserinfo,
     PostReply,
     PostFavorite,
     PostDrawer,
-    UpdatePostForm
+    UpdatePostForm,
+    Loading
   },
   data() {
     return {
+      isLoading: true,
       postDrawerBoolean: false,
       selectedPost: null,
       postUpdateArea: false,
@@ -101,6 +108,13 @@ export default {
         }
       }
     }
+  },
+  async created() {
+    if (this.showPostList.length > 0) {
+      this.isLoading = false
+    }
+    await post_list_fetch()
+    this.isLoading = false
   },
   mounted() { 
     // ドロワー表示中に画面をクリックした際にドロワーを閉じる
