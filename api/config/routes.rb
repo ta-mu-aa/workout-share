@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   get 'posts/index'
   get 'posts/show'
   get 'posts/create'
+  get 'posts/individual_post/:id', to: 'posts#individual_post'
   resources :user, only:[:create, :index, :show, :edit, :update] do 
     member do
       get :relationship_list

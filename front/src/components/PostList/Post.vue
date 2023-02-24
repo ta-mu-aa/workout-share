@@ -59,7 +59,8 @@ import PostFavorite from './PostFavorite.vue'
 import PostDrawer from './PostDrawer.vue'
 import UpdatePostForm from '../PostForm/UpdatePostForm.vue'
 import Loading from '../Loading.vue'
-import post_list_fetch from '../../../plugins/post-list-fetch.js'
+import { post_list_fetch } from '../../../plugins/post-list-fetch.js'
+import { mypage_post_list_fetch } from '../../../plugins/post-list-fetch.js'
 export default {
   components: {
     PostUserinfo,
@@ -68,6 +69,11 @@ export default {
     PostDrawer,
     UpdatePostForm,
     Loading
+  },
+  props: {
+    page: {
+      type: String
+    }
   },
   data() {
     return {
@@ -94,7 +100,12 @@ export default {
   },
   computed: {
     showPostList() {
-      return this.$store.getters.postList
+      if (this.page === 'mypage') {
+        return this.$store.getters.mypostList
+      }
+      else {
+        return this.$store.getters.postList
+      }
     },
   },
   watch: {
@@ -113,7 +124,12 @@ export default {
     if (this.showPostList.length > 0) {
       this.isLoading = false
     }
-    await post_list_fetch()
+    if (this.page === 'mypage') {
+      await mypage_post_list_fetch()
+    }
+    else {
+      await post_list_fetch()
+    }
     this.isLoading = false
   },
   mounted() { 
