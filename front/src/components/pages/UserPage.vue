@@ -42,7 +42,7 @@
       <div class="container">
         <div class="flex justify-center">
           <div class="w-3/5 border border-gray-600 h-auto  border-t-0">
-            <Post />
+            <Post page="mypage"/>
           </div>
         </div>
       </div>
@@ -53,7 +53,6 @@
 <script>
 import Post from '../PostList/Post.vue'
 import HeaderBar from '../HeaderBar/HeaderBar.vue'
-import post_list_fetch from '../../../plugins/post-list-fetch.js'
 import user_relationship_fetch from '../../../plugins/user-relationship-fetch.js'
 export default {
   components: {
@@ -125,7 +124,6 @@ export default {
   },
   async created() {
     this.setUserRelationshipInfo()
-    await post_list_fetch()
   },
   watch: {
     // URLパラメータの変更を検知して反映させる

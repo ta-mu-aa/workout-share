@@ -20,6 +20,7 @@ export const store = createStore({
         isVisible: false
       },
       postList: [],
+      mypostList: [],
       userPage: {},
       UserRelationshipsList: {}
     }
@@ -50,14 +51,26 @@ export const store = createStore({
     setPostList(state, payload) {
       state.postList = payload
     },
+    setMyPostList(state, payload) {
+      state.mypostList = payload
+    },
     deletePost(state, payload) {
       const deletedPostArray = state.postList.filter(post => {
         return post.id !== payload
       })
+      const deletedMypostArray = state.mypostList.filter(post => {
+        return post.id !== payload
+      })
       state.postList = deletedPostArray
+      state.mypostList = deletedMypostArray
     },
     updatePost(state, payload) {
       state.postList.map(post => {
+        if (post.id === payload.id) {
+          post.body = payload.body
+        }
+      })
+      state.mypostList.map(post => {
         if (post.id === payload.id) {
           post.body = payload.body
         }
@@ -101,6 +114,9 @@ export const store = createStore({
     getPostList({ commit }, postList) {
       commit('setPostList', postList)
     },
+    getMyPostList({ commit }, postList) {
+      commit('setMyPostList', postList)
+    },
     deletePost({ commit }, selectedPost) {
       commit('deletePost', selectedPost)
     },
@@ -143,6 +159,15 @@ export const store = createStore({
         return (a.created_at > b.created_at) ? -1 : 1;  //オブジェクト昇順ソート
       })
       return postListByDate
+    },
+    mypostList(state) {
+      let mypostListByDate =  Object.keys(state.mypostList).map(key => {
+        return state.mypostList[key];
+      })
+      mypostListByDate.sort(function (a, b) {
+        return (a.created_at > b.created_at) ? -1 : 1;
+      })
+      return mypostListByDate
     },
   // マイページ関連
     userPage(state) {
