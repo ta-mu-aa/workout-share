@@ -18,15 +18,15 @@ class PostsController < ApplicationController
   end
 
   def index
-    post_all = Post.all
-    add_username_post_all = post_all.map do |post| 
-      posted_user = User.find_by(id: post[:user_id])
-      { 
-        "id" => post.id, "body" => post.body, "created_at" => post.created_at, "updated_at" => post.updated_at, 
-        "user_id" => post.user_id, "user_name" => posted_user.name, "image_icon" => posted_user.image_url
-      }
-    end
+    fetch_post = Post.all
+    add_username_post_all = fetch_post_list(fetch_post)
     render json: add_username_post_all
+  end
+
+  def individual_post
+    fetch_post = Post.where(user_id: params[:id])
+    individual_post = fetch_post_list(fetch_post)
+    render json: individual_post
   end
 
   def show
@@ -58,5 +58,15 @@ class PostsController < ApplicationController
   private
     def post_params
       params.require(:post).permit(:body, :user_id)
+    end
+
+    def fetch_post_list(fetch_post)
+      fetch_post.map do |post|
+        posted_user = User.find_by(id: post[:user_id])
+        {
+          "id" => post.id, "body" => post.body, "created_at" => post.created_at, "updated_at" => post.updated_at,
+          "user_id" => post.user_id, "user_name" => posted_user.name, "image_icon" => posted_user.image_url
+        }
+      end
     end
 end
