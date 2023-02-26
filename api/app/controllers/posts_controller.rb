@@ -30,7 +30,7 @@ class PostsController < ApplicationController
   end
 
   def show
-    post_unique = Post.find(params[:id])
+    fetch_post = Post.find(params[:id])
     render json: post_unique
   end
 
@@ -63,9 +63,11 @@ class PostsController < ApplicationController
     def fetch_post_list(fetch_post)
       fetch_post.map do |post|
         posted_user = User.find_by(id: post[:user_id])
+        favorite_quantity = Favorite.select(:id,:user_id).where(post_id: post[:id])
         {
           "id" => post.id, "body" => post.body, "created_at" => post.created_at, "updated_at" => post.updated_at,
-          "user_id" => post.user_id, "user_name" => posted_user.name, "image_icon" => posted_user.image_url
+          "user_id" => post.user_id, "user_name" => posted_user.name, "image_icon" => posted_user.image_url,
+          "favorite" => favorite_quantity
         }
       end
     end
