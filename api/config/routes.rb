@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get 'health_check', to: 'health_check#index'
   resources :posts do
     resource :favorites, only: [:create, :destroy]
   end

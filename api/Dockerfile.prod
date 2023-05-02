@@ -1,0 +1,31 @@
+FROM --platform=linux/x86_64 ruby:2.7.6
+
+ENV LANG C.UTF-8
+ENV TZ Asia/Tokyo
+
+WORKDIR /app
+
+COPY Gemfile* ./
+
+# パッケージのインストール&削除
+RUN apt-get update -qq && \
+  apt-get install -y build-essential \
+  libpq-dev \
+  sudo \
+  nginx && \
+  gem install bundler:2.0.1
+
+RUN bundle install
+
+COPY . ./
+RUN mkdir -p tmp/sockets
+
+# nginx
+RUN groupadd nginx
+RUN useradd -g nginx nginx
+ADD nginx/nginx.conf /etc/nginx/nginx.conf
+
+EXPOSE 80
+
+RUN chmod +x /app/entrypoint_prod.sh
+CMD ["/app/entrypoint_prod.sh"]
