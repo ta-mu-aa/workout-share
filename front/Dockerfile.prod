@@ -7,7 +7,7 @@ ENV TZ Asia/Tokyo
 COPY package.json ./
 COPY package-lock.json ./
 
-RUN apk update && npm install -g
+RUN apk update && npm install -g && npm update
 
 COPY . .
 RUN npm run build

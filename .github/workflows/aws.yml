@@ -3,19 +3,20 @@ name: Deploy to Amazon ECS
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "dev" ]
 
 env:
-  AWS_REGION: MY_AWS_REGION
-  ECR_REPOSITORY_FRONT: MY_ECR_REPOSITORY_FRONT
-  ECR_REPOSITORY_BACKEND: MY_ECR_REPOSITORY_BACKEND
-  ECS_SERVICE_FRONT: MY_ECS_SERVICE_FRONT
-  ECS_SERVICE_BACKEND: MY_ECS_SERVICE_BAKCEND
-  ECS_CLUSTER: MY_ECS_CLUSTER
-  ECS_TASK_DEFINITION_FRONT: MY_ECS_TASK_DEFINITION_FRONT     
-  ECS_TASK_DEFINITION_BACKEND: MY_ECS_TASK_DEFINITION_BACKEND
-  CONTAINER_NAME_FRONT: MY_CONTAINER_NAME_FRONT
-  CONTAINER_NAME_BACKEND: MY_CONTAINER_NAME　_BACKEND
+  AWS_REGION: ${{ vars.MY_AWS_REGION }}
+  ECR_REGISTRY: ${{ vars.MY_ECR_REGISTRY }}
+  ECR_REPOSITORY_FRONT: ${{ vars.MY_ECR_REPOSITORY_FRONT }}
+  ECR_REPOSITORY_BACKEND: ${{ vars.MY_ECR_REPOSITORY_BACKEND }}
+  ECS_SERVICE_FRONT: ${{ vars.MY_ECS_SERVICE_FRONT }}
+  ECS_SERVICE_BACKEND: ${{ vars.MY_ECS_SERVICE_BACKEND }}
+  ECS_CLUSTER: ${{ vars.MY_ECS_CLUSTER }}
+  ECS_TASK_DEFINITION_FRONT: ${{ vars.MY_ECS_TASK_DEFINITION_FRONT }}
+  ECS_TASK_DEFINITION_BACKEND: ${{ vars.MY_ECS_TASK_DEFINITION_BACKEND }}
+  CONTAINER_NAME_FRONT: ${{ vars.MY_CONTAINER_NAME_FRONT }}
+  CONTAINER_NAME_BACKEND: ${{ vars.MY_CONTAINER_NAME_BACKEND }}
 
 permissions:
   contents: read
@@ -41,25 +42,27 @@ jobs:
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
 
-    - name: Build, tag, and push　　frontend image to Amazon ECR
+    - name: Build, tag, and push frontend image to Amazon ECR
       id: build-image-front
       env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: MY_ECR_REPOSITORY_FRONT
+        ECR_REGISTRY: ${{ env.ECR_REGISTRY }}
+        ECR_REPOSITORY: ${{ env.ECR_REPOSITORY_FRONT }}
         IMAGE_TAG: ${{ github.sha }}
       run: |
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin $ECR_REGISTRY 
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f front/Dockerfile.prod front/
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
     
     - name: Build, tag, and push backend image to Amazon ECR
       id: build-image-backend
       env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: MY_ECR_REPOSITORY_BACKEND 
+        ECR_REGISTRY: ${{ env.ECR_REGISTRY }}
+        ECR_REPOSITORY: ${{ env.ECR_REPOSITORY_BACKEND }}
         IMAGE_TAG: ${{ github.sha }}
       run: |
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin $ECR_REGISTRY 
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f api/Dockerfile.prod api/
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
