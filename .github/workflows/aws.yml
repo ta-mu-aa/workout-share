@@ -66,11 +66,19 @@ jobs:
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
+    - name: Download front task definition
+      run: |
+        aws ecs describe-task-definition --task-definition $ECS_TASK_DEFINITION_FRONT --query taskDefinition > front-task-definition.json
+
+    - name: Download backend task definition
+      run: |
+        aws ecs describe-task-definition --task-definition $ECS_TASK_DEFINITION_BACKEND --query taskDefinition > backend-task-definition.json
+
     - name: Fill in the new frontend image ID in the Amazon ECS task definition
       id: task-def-front
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
-        task-definition: ${{ env.ECS_TASK_DEFINITION_FRONT }}
+        task-definition: front-task-definition.json
         container-name: ${{ env.CONTAINER_NAME_FRONT }}
         image: ${{ steps.build-image-front.outputs.image }}
     
@@ -78,7 +86,7 @@ jobs:
       id: task-def-backend
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
-        task-definition: ${{ env.ECS_TASK_DEFINITION_BACKEND }}
+        task-definition: backend-task-definition.json
         container-name: ${{ env.CONTAINER_NAME_BACKEND }}
         image: ${{ steps.build-image-backend.outputs.image }}
 
