@@ -1,7 +1,7 @@
 name: "Ruby on Rails CI"
 on:
   push:
-    branches: [ "CI/create-ci-action" ]
+    branches: [ "feature/**", "fix/**", "maintenance/**"]
   pull_request:
     branches: [ "dev","main" ]
 
