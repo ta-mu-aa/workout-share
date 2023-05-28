@@ -1,0 +1,48 @@
+name: "Ruby on Rails CI"
+on:
+  push:
+    branches: [ "CI/create-ci-action" ]
+  pull_request:
+    branches: [ "dev","main" ]
+
+env:
+  RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0.28
+        ports:
+          - "3306:3306"
+        env:
+          MYSQL_ROOT_PASSWORD: password
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v1
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@55283cc23133118229fd3f97f9336ee23a179fcf
+        with:
+          ruby-version: 2.7.6
+          bundler-cache: true
+      
+      - name: Install dependencies
+        run: |
+          gem install bundler
+          cd ./api 
+          bundle install
+
+      - name: Setup Database
+        env:
+          RAILS_ENV: test
+        run: |
+          cd ./api
+          cp config/database.yml.ci config/database.yml
+          ./bin/rails db:create
+          ./bin/rails db:migrate
+      - name: Run tests
+        run: |
+          cd ./api
+          ./bin/rails test test
