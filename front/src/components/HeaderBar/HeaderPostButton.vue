@@ -6,7 +6,7 @@
 </template>
 
 <script>
-  import PostFormModal from '../../components/PostForm/PostFormModal.vue' 
+  import PostFormModal from '../PostForm/PostFormModal.vue' 
   import silent_refresh_method from '../../../plugins/silent-refresh-token.js'
 export default {
   components: {
