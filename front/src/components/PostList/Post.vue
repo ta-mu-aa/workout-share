@@ -36,7 +36,7 @@
       <div class="flex">
         <div class="w-full">
           <div class="flex justify-end items-center">
-            <PostReply />
+            <!-- <PostReply /> -->
             <PostFavorite 
             :post_id="post.id" 
             :favorite_quantity="post.favorite"
