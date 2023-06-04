@@ -20,20 +20,29 @@ touch .env　
 docker-compose build　
 ```
 5. DBの作成
- ``` 
+``` 
  docker-compose run --rm api rails db:create 
 ```
-6. コンテナの作成
+6. DBのマイグレーション
+``` 
+ docker-compose run --rm api rails db:migrate 
+```
+7. コンテナの作成
  ``` 
  docker-compose up -d 
 ```
   ※ vite not foundが出た場合は以下を実行
  ``` 
- docker-compose run front npm i
+ docker-compose run --rm front npm install
 ```
 
-7. コンテナが起動したことを確認後  
+8. コンテナが起動したことを確認後  
 `http://locahost:3000` にアクセス
+
+#### テストデータを投入する場合
+ ``` 
+ docker-compose run --rm api rails db:seed
+```
 
 ## インフラ構成図
 ![構成図](https://github.com/ta-mu-aa/workout-share/assets/76101803/c809c0f3-86ed-4da3-b966-7e4d3677f265)
