@@ -6,9 +6,9 @@
     <div class="flex-grow flex items-center justify-end w-auto">
       <div class="mr-6 md:mr-10">
         <HeaderHome />
-        <HeaderSerch />
-        <HeaderMessage />
-        <HeaderNotification />
+        <!-- <HeaderSerch /> -->
+        <!-- <HeaderMessage /> -->
+        <HeaderPostButton />
       </div>
       <div class="flex-shrink-0 flex hover:bg-blue-00 rounded-full mr-2">
         <HeaderUserinfo />
@@ -20,14 +20,14 @@
 <script>
 import HeaderHome from './HeaderHome.vue'
 import HeaderSerch from './HeaderSerch.vue'
-import HeaderNotification from './HeaderNotification.vue'
+import HeaderPostButton from './HeaderPostButton.vue'
 import HeaderMessage from './HeaderMessage.vue'
 import HeaderUserinfo from './HeaderUserinfo.vue'
 export default {
   components: {
     HeaderHome,
     HeaderSerch,
-    HeaderNotification,
+    HeaderPostButton,
     HeaderMessage,
     HeaderUserinfo,
   }
