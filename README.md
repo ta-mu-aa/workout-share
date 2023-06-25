@@ -48,7 +48,7 @@ docker-compose build　
 ![構成図](https://github.com/ta-mu-aa/workout-share/assets/76101803/c809c0f3-86ed-4da3-b966-7e4d3677f265)
 
 ## ER図
-![ws_er](https://github.com/ta-mu-aa/workout-share/assets/76101803/2331862b-0ca9-446a-9c0e-3e4e5e514edd)
+![ws-er-2](https://github.com/ta-mu-aa/workout-share/assets/76101803/60c508e8-8660-4ee2-9f6d-8d343870ccd3)
 
 ## 使用技術
 #### フロントエンド
